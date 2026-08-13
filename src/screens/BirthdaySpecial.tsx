@@ -23,7 +23,7 @@ export default function BirthdaySpecial() {
 
   return (
     <div className="p-4 pb-24 max-w-lg mx-auto space-y-4">
-      <Link to="/" className="inline-flex items-center gap-1 text-sm text-sky-600"><ArrowLeft size={14} /> Inicio</Link>
+      <Link to="/" className="inline-flex items-center gap-1 text-sm text-brand-600"><ArrowLeft size={14} /> Inicio</Link>
 
       <div className="birthday-confetti-bg rounded-2xl p-5 text-white text-center shadow-lg">
         <p className="text-4xl">🎂</p>

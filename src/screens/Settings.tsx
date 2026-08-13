@@ -5,7 +5,7 @@ import { isWeatherConfigured } from '../lib/weather';
 export default function Settings() {
   return (
     <div className="p-4 pb-24 max-w-lg mx-auto space-y-4">
-      <Link to="/mas" className="inline-flex items-center gap-1 text-sm text-sky-600"><ArrowLeft size={14} /> Más</Link>
+      <Link to="/mas" className="inline-flex items-center gap-1 text-sm text-brand-600"><ArrowLeft size={14} /> Más</Link>
       <header>
         <h1 className="text-xl font-extrabold text-slate-800">Ajustes</h1>
       </header>

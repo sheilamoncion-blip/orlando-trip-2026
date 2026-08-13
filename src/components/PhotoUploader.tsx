@@ -15,7 +15,7 @@ export default function PhotoUploader({ onUpload, label = 'Subir foto' }: { onUp
 
   return (
     <>
-      <button onClick={() => input.current?.click()} className="flex items-center gap-1.5 text-xs font-medium text-sky-600 hover:underline">
+      <button onClick={() => input.current?.click()} className="flex items-center gap-1.5 text-xs font-medium text-brand-600 hover:underline">
         <Camera size={14} /> {label}
       </button>
       <input ref={input} type="file" accept="image/*" onChange={handleChange} className="hidden" />

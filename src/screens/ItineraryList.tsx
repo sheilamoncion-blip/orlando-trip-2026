@@ -23,7 +23,7 @@ export default function ItineraryList() {
           <Link
             key={day.date}
             to={day.park ? `/itinerario/${day.date}` : '#'}
-            className={`block bg-white rounded-2xl border p-4 shadow-sm transition ${day.park ? 'hover:border-sky-300 cursor-pointer' : 'opacity-80 cursor-default'} ${birthday ? 'border-amber-300 ring-1 ring-amber-200' : 'border-slate-200'}`}
+            className={`block bg-white rounded-2xl border p-4 shadow-sm transition ${day.park ? 'hover:border-brand-300 cursor-pointer' : 'opacity-80 cursor-default'} ${birthday ? 'border-amber-300 ring-1 ring-amber-200' : 'border-slate-200'}`}
           >
             <div className="flex items-start justify-between gap-2">
               <div>

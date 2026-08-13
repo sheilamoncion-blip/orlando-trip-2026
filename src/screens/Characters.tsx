@@ -7,7 +7,7 @@ import CommentThread from '../components/CommentThread';
 export default function Characters() {
   return (
     <div className="p-4 pb-24 max-w-lg mx-auto space-y-3">
-      <Link to="/mas" className="inline-flex items-center gap-1 text-sm text-sky-600"><ArrowLeft size={14} /> Más</Link>
+      <Link to="/mas" className="inline-flex items-center gap-1 text-sm text-brand-600"><ArrowLeft size={14} /> Más</Link>
       <header>
         <h1 className="text-xl font-extrabold text-slate-800">Personajes & Fotos</h1>
         <p className="text-sm text-slate-500">Dónde encontrarlos y qué esperar</p>
@@ -24,7 +24,7 @@ export default function Characters() {
           <p className="text-xs text-slate-600 mt-1"><span className="font-medium">Regalos/freebies:</span> {c.freebies.join(', ')}</p>
           <p className="text-xs text-slate-500 mt-1 italic">📸 {c.photoTip}</p>
           {c.referenceLinks.length > 0 && (
-            <a href={c.referenceLinks[0]} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[11px] text-sky-600 mt-1.5 hover:underline">
+            <a href={c.referenceLinks[0]} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[11px] text-brand-600 mt-1.5 hover:underline">
               <ExternalLink size={11} /> Fotos de referencia
             </a>
           )}

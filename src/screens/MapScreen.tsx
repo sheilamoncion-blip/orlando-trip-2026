@@ -44,7 +44,7 @@ export default function MapScreen() {
           <button
             key={f.key}
             onClick={() => setFilter(f.key)}
-            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition ${filter === f.key ? 'bg-sky-600 text-white border-sky-600' : 'bg-white border-slate-200 text-slate-600'}`}
+            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition ${filter === f.key ? 'bg-brand-600 text-white border-brand-600' : 'bg-white border-slate-200 text-slate-600'}`}
           >
             {f.label}
           </button>

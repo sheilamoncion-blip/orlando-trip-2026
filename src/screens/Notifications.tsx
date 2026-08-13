@@ -71,7 +71,7 @@ export default function Notifications() {
           <div className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-sm space-y-1.5">
             <p className="text-sm font-semibold text-slate-800 flex items-center gap-1.5"><Thermometer size={14} /> {weather.tempC}°C — {weather.description}</p>
             {heatAdvisory(weather.tempC) && <p className="text-xs text-amber-600">🥵 {heatAdvisory(weather.tempC)}</p>}
-            {rainAdvisory(weather.condition) && <p className="text-xs text-sky-600 flex items-center gap-1"><Waves size={12} /> {rainAdvisory(weather.condition)}</p>}
+            {rainAdvisory(weather.condition) && <p className="text-xs text-brand-600 flex items-center gap-1"><Waves size={12} /> {rainAdvisory(weather.condition)}</p>}
           </div>
         ) : (
           <div className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-sm text-xs text-slate-500">
@@ -114,7 +114,7 @@ export default function Notifications() {
           <div className="flex gap-2">
             <input value={resName} onChange={e => setResName(e.target.value)} placeholder="Ej: Mythos" className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-xs bg-slate-50 focus:outline-none" />
             <input type="datetime-local" value={resTime} onChange={e => setResTime(e.target.value)} className="border border-slate-200 rounded-lg px-2 py-2 text-xs bg-slate-50 focus:outline-none" />
-            <button onClick={addReservation} className="bg-sky-600 text-white p-2 rounded-lg shrink-0"><Plus size={14} /></button>
+            <button onClick={addReservation} className="bg-brand-600 text-white p-2 rounded-lg shrink-0"><Plus size={14} /></button>
           </div>
           {reservations.length === 0 && <p className="text-xs text-slate-400 text-center py-2">Sin recordatorios todavía</p>}
           {reservations.map(r => {

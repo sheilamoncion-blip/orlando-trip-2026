@@ -46,7 +46,7 @@ export default function DayDetail() {
   if (!date || !primaryPark) {
     return (
       <div className="p-4 max-w-lg mx-auto">
-        <Link to="/itinerario" className="text-sky-600 text-sm">← Volver al itinerario</Link>
+        <Link to="/itinerario" className="text-brand-600 text-sm">← Volver al itinerario</Link>
         <p className="mt-4 text-slate-500">Día libre — no hay actividades programadas.</p>
       </div>
     );
@@ -58,7 +58,7 @@ export default function DayDetail() {
 
   return (
     <div className="p-4 pb-24 space-y-4 max-w-lg mx-auto">
-      <Link to="/itinerario" className="inline-flex items-center gap-1 text-sm text-sky-600"><ArrowLeft size={14} /> Itinerario</Link>
+      <Link to="/itinerario" className="inline-flex items-center gap-1 text-sm text-brand-600"><ArrowLeft size={14} /> Itinerario</Link>
 
       <header>
         <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{date}</p>
@@ -134,10 +134,10 @@ export default function DayDetail() {
 function AreaGuideBox({ guide, bestFor, walkFrom }: { guide: string; bestFor: string; walkFrom?: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="bg-sky-50/60 border border-sky-100 rounded-xl overflow-hidden">
+    <div className="bg-brand-50/60 border border-brand-100 rounded-xl overflow-hidden">
       <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between px-3 py-2 text-left">
-        <span className="text-xs text-sky-700"><span className="font-semibold">Mejor para:</span> {bestFor}{walkFrom && ` · ${walkFrom}`}</span>
-        <ChevronDown size={14} className={`text-sky-500 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
+        <span className="text-xs text-brand-700"><span className="font-semibold">Mejor para:</span> {bestFor}{walkFrom && ` · ${walkFrom}`}</span>
+        <ChevronDown size={14} className={`text-brand-500 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && <pre className="whitespace-pre-wrap font-sans text-xs text-slate-600 px-3 pb-3 leading-relaxed">{guide}</pre>}
     </div>
@@ -179,7 +179,7 @@ function AttractionCard({ attraction, live, done, onToggle }: { attraction: Attr
       )}
       <p className="text-xs text-slate-500 mt-2 italic">📸 {attraction.photoTip}</p>
       {attraction.referenceLinks.length > 0 && (
-        <a href={attraction.referenceLinks[0]} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[11px] text-sky-600 mt-1.5 hover:underline">
+        <a href={attraction.referenceLinks[0]} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[11px] text-brand-600 mt-1.5 hover:underline">
           <ExternalLink size={11} /> Fotos de referencia (Pinterest)
         </a>
       )}
@@ -195,7 +195,7 @@ function AttractionCard({ attraction, live, done, onToggle }: { attraction: Attr
         value={note}
         onChange={e => { setNote(e.target.value); db.setNote(attraction.id, e.target.value); }}
         placeholder="Agregar nota personal..."
-        className="w-full mt-2 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs bg-slate-50 focus:outline-none focus:ring-1 focus:ring-sky-400"
+        className="w-full mt-2 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs bg-slate-50 focus:outline-none focus:ring-1 focus:ring-brand-400"
       />
       <CommentThread threadId={attraction.id} />
     </div>
@@ -238,7 +238,7 @@ function CharacterCard({ character }: { character: CharacterMeet }) {
   return (
     <div className="bg-white rounded-xl border border-slate-200 p-3 shadow-sm">
       <div className="flex items-center gap-2">
-        <Users2 size={14} className="text-sky-500 shrink-0" />
+        <Users2 size={14} className="text-brand-500 shrink-0" />
         <span className="font-medium text-slate-700 text-sm">{character.name}</span>
       </div>
       <p className="text-xs text-slate-500 mt-1">Apariciones: {character.appearanceTimes.join(' · ')}</p>
@@ -246,7 +246,7 @@ function CharacterCard({ character }: { character: CharacterMeet }) {
       <p className="text-xs text-slate-600 mt-1"><span className="font-medium">Freebies:</span> {character.freebies.join(', ')}</p>
       {character.outfitOptions && character.outfitOptions.length > 0 && (
         <>
-          <button onClick={() => setShowOutfits(!showOutfits)} className="flex items-center gap-1 text-[11px] text-sky-600 mt-1.5">
+          <button onClick={() => setShowOutfits(!showOutfits)} className="flex items-center gap-1 text-[11px] text-brand-600 mt-1.5">
             <Shirt size={12} /> {showOutfits ? 'Ocultar' : 'Ver'} opciones de outfit
           </button>
           {showOutfits && (

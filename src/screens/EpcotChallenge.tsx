@@ -31,15 +31,15 @@ export default function EpcotChallenge() {
 
       <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm mb-4 grid grid-cols-3 gap-2 text-center">
         <div>
-          <p className="text-lg font-extrabold text-sky-600">{countriesCompleted}/11</p>
+          <p className="text-lg font-extrabold text-brand-600">{countriesCompleted}/11</p>
           <p className="text-[10px] text-slate-500 uppercase tracking-wide">Países</p>
         </div>
         <div>
-          <p className="text-lg font-extrabold text-sky-600">{doneItems.length}/{allItems.length}</p>
+          <p className="text-lg font-extrabold text-brand-600">{doneItems.length}/{allItems.length}</p>
           <p className="text-[10px] text-slate-500 uppercase tracking-wide">Ítems probados</p>
         </div>
         <div>
-          <p className="text-lg font-extrabold text-sky-600">${totalSpent}</p>
+          <p className="text-lg font-extrabold text-brand-600">${totalSpent}</p>
           <p className="text-[10px] text-slate-500 uppercase tracking-wide">Gastado</p>
         </div>
       </div>
@@ -54,7 +54,7 @@ export default function EpcotChallenge() {
               key={c.id}
               onClick={() => setActiveCountry(c.id)}
               className={`shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border transition ${
-                activeCountry === c.id ? 'bg-sky-600 text-white border-sky-600' : complete ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'bg-white border-slate-200 text-slate-600'
+                activeCountry === c.id ? 'bg-brand-600 text-white border-brand-600' : complete ? 'bg-emerald-50 border-emerald-300 text-emerald-700' : 'bg-white border-slate-200 text-slate-600'
               }`}
             >
               <span className="text-base">{c.flag}</span> {c.name} {complete && <Check size={12} />}
@@ -92,22 +92,22 @@ function CountryInfoBox({ country }: { country: Country }) {
   if (!hasInfo) return null;
 
   return (
-    <div className="bg-sky-50/60 border border-sky-100 rounded-xl p-3 mb-4 space-y-1.5">
+    <div className="bg-brand-50/60 border border-brand-100 rounded-xl p-3 mb-4 space-y-1.5">
       {country.bestTime && (
-        <p className="text-xs text-slate-700 flex items-start gap-1.5"><Clock size={13} className="text-sky-600 shrink-0 mt-0.5" /> <span><span className="font-semibold">Mejor hora:</span> {country.bestTime}</span></p>
+        <p className="text-xs text-slate-700 flex items-start gap-1.5"><Clock size={13} className="text-brand-600 shrink-0 mt-0.5" /> <span><span className="font-semibold">Mejor hora:</span> {country.bestTime}</span></p>
       )}
       {country.crowdLevel && (
-        <p className="text-xs text-slate-700 flex items-start gap-1.5"><Users size={13} className="text-sky-600 shrink-0 mt-0.5" /> <span><span className="font-semibold">Nivel de gente:</span> {country.crowdLevel}</span></p>
+        <p className="text-xs text-slate-700 flex items-start gap-1.5"><Users size={13} className="text-brand-600 shrink-0 mt-0.5" /> <span><span className="font-semibold">Nivel de gente:</span> {country.crowdLevel}</span></p>
       )}
       {country.photoTip && (
-        <p className="text-xs text-slate-700 flex items-start gap-1.5"><Camera size={13} className="text-sky-600 shrink-0 mt-0.5" /> <span>{country.photoTip}</span></p>
+        <p className="text-xs text-slate-700 flex items-start gap-1.5"><Camera size={13} className="text-brand-600 shrink-0 mt-0.5" /> <span>{country.photoTip}</span></p>
       )}
       {country.entertainment && (
-        <p className="text-xs text-slate-700 flex items-start gap-1.5"><Music size={13} className="text-sky-600 shrink-0 mt-0.5" /> <span>{country.entertainment}</span></p>
+        <p className="text-xs text-slate-700 flex items-start gap-1.5"><Music size={13} className="text-brand-600 shrink-0 mt-0.5" /> <span>{country.entertainment}</span></p>
       )}
       {country.guide && (
         <>
-          <button onClick={() => setShowGuide(!showGuide)} className="flex items-center gap-1 text-[11px] text-sky-700 font-medium mt-1">
+          <button onClick={() => setShowGuide(!showGuide)} className="flex items-center gap-1 text-[11px] text-brand-700 font-medium mt-1">
             <ChevronDown size={12} className={`transition-transform ${showGuide ? 'rotate-180' : ''}`} /> {showGuide ? 'Ocultar' : 'Ver'} estrategia completa
           </button>
           {showGuide && <p className="text-xs text-slate-600 bg-white rounded-lg p-2 mt-1">{country.guide}</p>}

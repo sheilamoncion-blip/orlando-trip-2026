@@ -14,7 +14,7 @@ export function PhotogenicRating({ value }: { value: number }) {
   return (
     <span className="inline-flex items-center gap-0.5" title={`Fotogénico: ${value}/5`}>
       {Array.from({ length: value }).map((_, i) => (
-        <Camera key={i} size={12} className="text-sky-500" />
+        <Camera key={i} size={12} className="text-brand-500" />
       ))}
     </span>
   );

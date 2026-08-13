@@ -56,16 +56,16 @@ export default function CommentThread({ threadId }: { threadId: string }) {
               value={author}
               onChange={e => setAuthor(e.target.value)}
               placeholder="Tu nombre"
-              className="w-20 shrink-0 border border-slate-200 rounded-lg px-2 py-1.5 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-sky-400"
+              className="w-20 shrink-0 border border-slate-200 rounded-lg px-2 py-1.5 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-brand-400"
             />
             <input
               value={text}
               onChange={e => setText(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && send()}
               placeholder="Escribe un comentario..."
-              className="flex-1 border border-slate-200 rounded-lg px-3 py-1.5 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-sky-400"
+              className="flex-1 border border-slate-200 rounded-lg px-3 py-1.5 text-xs bg-white focus:outline-none focus:ring-1 focus:ring-brand-400"
             />
-            <button onClick={() => send()} className="bg-sky-600 text-white p-1.5 rounded-lg hover:opacity-90"><Send size={13} /></button>
+            <button onClick={() => send()} className="bg-brand-600 text-white p-1.5 rounded-lg hover:opacity-90"><Send size={13} /></button>
           </div>
         </div>
       )}

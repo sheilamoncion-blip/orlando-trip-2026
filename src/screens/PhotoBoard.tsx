@@ -36,7 +36,7 @@ export default function PhotoBoard() {
 
   return (
     <div className="p-4 pb-24 max-w-lg mx-auto space-y-4">
-      <Link to="/mas" className="inline-flex items-center gap-1 text-sm text-sky-600"><ArrowLeft size={14} /> Más</Link>
+      <Link to="/mas" className="inline-flex items-center gap-1 text-sm text-brand-600"><ArrowLeft size={14} /> Más</Link>
       <header>
         <h1 className="text-xl font-extrabold text-slate-800">Tablero de Inspiración</h1>
         <p className="text-sm text-slate-500">Referencias de Pinterest + fotos de la familia — {recreated} recreadas</p>
@@ -47,7 +47,7 @@ export default function PhotoBoard() {
         <input value={refUrl} onChange={e => setRefUrl(e.target.value)} placeholder="https://pinterest.com/..." className="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs bg-slate-50 focus:outline-none" />
         <input value={refNote} onChange={e => setRefNote(e.target.value)} placeholder="Nota (ej: castillo de noche, ángulo bajo)" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs bg-slate-50 focus:outline-none" />
         <div className="flex items-center justify-between">
-          <button onClick={addReference} className="bg-sky-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium">Guardar referencia</button>
+          <button onClick={addReference} className="bg-brand-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium">Guardar referencia</button>
           <PhotoUploader onUpload={uploadFamilyPhoto} label="Subir nuestra foto" />
         </div>
       </div>
@@ -58,7 +58,7 @@ export default function PhotoBoard() {
             {item.dataUrl ? (
               <img src={item.dataUrl} alt={item.filename} className="w-full aspect-square object-cover" />
             ) : (
-              <a href={item.refUrl} target="_blank" rel="noreferrer" className="flex items-center justify-center aspect-square bg-slate-50 text-xs text-sky-600 p-3 text-center underline">
+              <a href={item.refUrl} target="_blank" rel="noreferrer" className="flex items-center justify-center aspect-square bg-slate-50 text-xs text-brand-600 p-3 text-center underline">
                 Ver referencia
               </a>
             )}

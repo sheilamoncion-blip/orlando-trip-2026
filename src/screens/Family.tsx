@@ -33,7 +33,7 @@ export default function Family() {
 
   return (
     <div className="p-4 pb-24 max-w-lg mx-auto space-y-4">
-      <Link to="/mas" className="inline-flex items-center gap-1 text-sm text-sky-600"><ArrowLeft size={14} /> Más</Link>
+      <Link to="/mas" className="inline-flex items-center gap-1 text-sm text-brand-600"><ArrowLeft size={14} /> Más</Link>
       <header>
         <h1 className="text-xl font-extrabold text-slate-800">Familia</h1>
         <p className="text-sm text-slate-500">{family.length} en la lista</p>
@@ -42,7 +42,7 @@ export default function Family() {
       <div className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-sm">
         <div className="flex gap-2 mb-3">
           <input value={name} onChange={e => setName(e.target.value)} onKeyDown={e => e.key === 'Enter' && add()} placeholder="Nombre" className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm bg-slate-50 focus:outline-none" />
-          <button onClick={add} className="bg-sky-600 text-white p-2 rounded-lg"><Plus size={16} /></button>
+          <button onClick={add} className="bg-brand-600 text-white p-2 rounded-lg"><Plus size={16} /></button>
         </div>
         <div className="flex flex-wrap gap-1.5">
           {family.map(f => (
@@ -63,7 +63,7 @@ export default function Family() {
         <div className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-sm space-y-2">
           <div className="flex gap-2">
             <input value={myStatus} onChange={e => setMyStatus(e.target.value)} onKeyDown={e => e.key === 'Enter' && shareStatus()} placeholder="Ej: En Space Mountain, nos vemos en 30 min" className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-xs bg-slate-50 focus:outline-none" />
-            <button onClick={shareStatus} className="bg-sky-600 text-white px-3 py-2 rounded-lg text-xs font-medium">Compartir</button>
+            <button onClick={shareStatus} className="bg-brand-600 text-white px-3 py-2 rounded-lg text-xs font-medium">Compartir</button>
           </div>
           <div className="space-y-1.5 pt-1">
             {groupStatus.length === 0 && <p className="text-xs text-slate-400 text-center py-2">Nadie ha compartido su estado todavía</p>}

@@ -15,8 +15,8 @@ export default defineConfig({
         name: 'Orlando Trip 2026 — Familia',
         short_name: 'Orlando 2026',
         description: 'Planificador del viaje familiar a Universal + Disney, Agosto 2026',
-        theme_color: '#1E5FA8',
-        background_color: '#0f172a',
+        theme_color: '#6552b3',
+        background_color: '#1a1530',
         display: 'standalone',
         start_url: '/',
         icons: [

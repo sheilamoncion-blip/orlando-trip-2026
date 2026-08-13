@@ -32,8 +32,8 @@ export default function MoreHub() {
 
       <div className="space-y-2">
         {LINKS.map(l => (
-          <Link key={l.to} to={l.to} className="flex items-center gap-3 bg-white rounded-xl border border-slate-200 p-3.5 shadow-sm hover:border-sky-300 transition">
-            <div className="bg-sky-50 rounded-lg p-2 shrink-0"><l.icon size={18} className="text-sky-600" /></div>
+          <Link key={l.to} to={l.to} className="flex items-center gap-3 bg-white rounded-xl border border-slate-200 p-3.5 shadow-sm hover:border-brand-300 transition">
+            <div className="bg-brand-50 rounded-lg p-2 shrink-0"><l.icon size={18} className="text-brand-600" /></div>
             <div>
               <p className="text-sm font-semibold text-slate-800">{l.label}</p>
               <p className="text-xs text-slate-500">{l.desc}</p>

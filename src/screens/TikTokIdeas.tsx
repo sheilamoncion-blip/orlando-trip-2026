@@ -16,7 +16,7 @@ export default function TikTokIdeas() {
 
   return (
     <div className="p-4 pb-24 max-w-lg mx-auto space-y-3">
-      <Link to="/mas" className="inline-flex items-center gap-1 text-sm text-sky-600"><ArrowLeft size={14} /> Más</Link>
+      <Link to="/mas" className="inline-flex items-center gap-1 text-sm text-brand-600"><ArrowLeft size={14} /> Más</Link>
       <header>
         <h1 className="text-xl font-extrabold text-slate-800 flex items-center gap-2"><Music2 size={20} /> Ideas para TikTok</h1>
         <p className="text-sm text-slate-500">Videos sugeridos por parque</p>
@@ -41,7 +41,7 @@ export default function TikTokIdeas() {
                   key={step}
                   onClick={() => setStep(idea.id, step)}
                   className={`flex-1 text-[11px] font-medium py-1.5 rounded-lg border transition ${
-                    status[step] ? 'bg-sky-600 text-white border-sky-600' : 'border-slate-200 text-slate-500'
+                    status[step] ? 'bg-brand-600 text-white border-brand-600' : 'border-slate-200 text-slate-500'
                   }`}
                 >
                   {step === 'filmed' ? 'Filmado' : step === 'edited' ? 'Editado' : 'Publicado'}
