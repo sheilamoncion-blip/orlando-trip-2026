@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, ExternalLink, Search, X } from 'lucide-react';
+import BackButton from '../components/BackButton';
+import { ExternalLink, Search, X } from 'lucide-react';
 import { CHARACTERS } from '../data/trip';
 import { PARK_LABELS, PARK_COLORS, type ParkId } from '../types';
 import CommentThread from '../components/CommentThread';
@@ -20,7 +20,7 @@ export default function Characters() {
 
   return (
     <div className="p-4 pb-24 max-w-lg mx-auto space-y-3">
-      <Link to="/mas" className="inline-flex items-center gap-1 text-sm text-brand-600"><ArrowLeft size={14} /> Más</Link>
+      <BackButton fallback="/mas" label="Más" />
       <header>
         <h1 className="text-xl font-extrabold text-slate-800">Personajes & Fotos</h1>
         <p className="text-sm text-slate-500">Dónde encontrarlos y qué esperar</p>

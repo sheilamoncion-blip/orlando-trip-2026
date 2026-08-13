@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, Clock, Ruler, ExternalLink, Users2, Check, ChevronDown, Shirt, Search, X } from 'lucide-react';
+import BackButton from '../components/BackButton';
+import ItemPhotos from '../components/ItemPhotos';
+import { Clock, Ruler, ExternalLink, Users2, Check, ChevronDown, Shirt, Search, X } from 'lucide-react';
 import { ATTRACTIONS, MEALS, SHOWS, CHARACTERS, BIRTHDAYS, AREA_GUIDES } from '../data/trip';
 import { PARK_LABELS } from '../types';
 import type { Attraction, Meal, CharacterMeet, ShowItem } from '../types';
@@ -89,7 +91,7 @@ export default function DayDetail() {
 
   return (
     <div className="p-4 pb-24 space-y-4 max-w-lg mx-auto">
-      <Link to="/itinerario" className="inline-flex items-center gap-1 text-sm text-brand-600"><ArrowLeft size={14} /> Itinerario</Link>
+      <BackButton fallback="/itinerario" label="Itinerario" />
 
       <header>
         <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{date}</p>
@@ -176,6 +178,7 @@ export default function DayDetail() {
                     {s.mustSee && <span className="text-[10px] font-bold bg-rose-100 text-rose-600 px-2 py-0.5 rounded-full">IMPERDIBLE</span>}
                   </div>
                   <p className="text-xs text-slate-500 mt-1">{s.times.join(' · ')} · {s.durationMin} min · {s.location}</p>
+                  <ItemPhotos itemId={s.id} />
                   <CommentThread threadId={s.id} />
                 </div>
               ))}
@@ -273,6 +276,7 @@ function AttractionCard({ attraction, live, done, onToggle }: { attraction: Attr
         placeholder="Agregar nota personal..."
         className="w-full mt-2 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs bg-slate-50 focus:outline-none focus:ring-1 focus:ring-brand-400"
       />
+      <ItemPhotos itemId={attraction.id} />
       <CommentThread threadId={attraction.id} />
     </div>
   );
@@ -304,6 +308,7 @@ function MealCard({ meal, done, onToggle }: { meal: Meal; done: boolean; onToggl
           ))}
         </div>
       )}
+      <ItemPhotos itemId={meal.id} />
       <CommentThread threadId={meal.id} />
     </div>
   );
@@ -340,6 +345,7 @@ function CharacterCard({ character }: { character: CharacterMeet }) {
           )}
         </>
       )}
+      <ItemPhotos itemId={character.id} />
       <CommentThread threadId={character.id} />
     </div>
   );

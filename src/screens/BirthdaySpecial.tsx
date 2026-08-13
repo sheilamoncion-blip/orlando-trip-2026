@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, Check, Gift, Sparkles } from 'lucide-react';
+import { useParams } from 'react-router-dom';
+import BackButton from '../components/BackButton';
+import { Check, Gift, Sparkles } from 'lucide-react';
 import { BIRTHDAYS, PERSONALIZATION } from '../data/trip';
 import { PARK_LABELS } from '../types';
 import { db } from '../lib/db';
@@ -23,7 +24,7 @@ export default function BirthdaySpecial() {
 
   return (
     <div className="p-4 pb-24 max-w-lg mx-auto space-y-4">
-      <Link to="/" className="inline-flex items-center gap-1 text-sm text-brand-600"><ArrowLeft size={14} /> Inicio</Link>
+      <BackButton fallback="/" label="Inicio" />
 
       <div className="birthday-confetti-bg rounded-2xl p-5 text-white text-center shadow-lg">
         <p className="text-4xl">🎂</p>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, Plus, X, MapPinned } from 'lucide-react';
+import BackButton from '../components/BackButton';
+import { Plus, X, MapPinned } from 'lucide-react';
 import { db } from '../lib/db';
 
 export default function Family() {
@@ -33,7 +33,7 @@ export default function Family() {
 
   return (
     <div className="p-4 pb-24 max-w-lg mx-auto space-y-4">
-      <Link to="/mas" className="inline-flex items-center gap-1 text-sm text-brand-600"><ArrowLeft size={14} /> Más</Link>
+      <BackButton fallback="/mas" label="Más" />
       <header>
         <h1 className="text-xl font-extrabold text-slate-800">Familia</h1>
         <p className="text-sm text-slate-500">{family.length} en la lista</p>

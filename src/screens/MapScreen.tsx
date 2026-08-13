@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { MapPin } from 'lucide-react';
+import { MapPin, ChevronDown, Image as ImageIcon } from 'lucide-react';
 import { PARK_LABELS, PARK_COLORS, type ParkId } from '../types';
+import PhotoUploader from '../components/PhotoUploader';
+import { db } from '../lib/db';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -14,9 +16,11 @@ const PARK_COORDS: Record<ParkId, [number, number]> = {
   epcot: [28.3747, -81.5494],
 };
 
-type Filter = 'all' | 'parks' | 'restrooms' | 'restaurants';
+const PARKS_ORDER: ParkId[] = ['universal', 'islands', 'epic', 'magic-kingdom', 'epcot'];
 
-const FILTERS: { key: Filter; label: string }[] = [
+type MapFilter = 'all' | 'parks' | 'restrooms' | 'restaurants';
+
+const FILTERS: { key: MapFilter; label: string }[] = [
   { key: 'all', label: 'Todo' },
   { key: 'parks', label: 'Parques' },
   { key: 'restaurants', label: 'Restaurantes' },
@@ -29,48 +33,98 @@ const parkIcon = (color: string) => L.divIcon({
   iconSize: [16, 16],
 });
 
+type Tab = 'interactivo' | 'parques';
+
 export default function MapScreen() {
-  const [filter, setFilter] = useState<Filter>('all');
+  const [tab, setTab] = useState<Tab>('interactivo');
+  const [filter, setFilter] = useState<MapFilter>('all');
 
   return (
     <div className="pb-24 max-w-lg mx-auto flex flex-col h-full">
       <div className="p-4 pb-2">
-        <h1 className="text-xl font-extrabold text-slate-800 flex items-center gap-2"><MapPin size={20} /> Mapa</h1>
-        <p className="text-xs text-slate-500 mt-0.5">Mapa libre (OpenStreetMap) — sin necesidad de cuenta de Google Cloud</p>
+        <h1 className="text-xl font-extrabold text-slate-800 flex items-center gap-2"><MapPin size={20} /> Mapas</h1>
       </div>
 
-      <div className="flex gap-1.5 px-4 pb-2 overflow-x-auto">
-        {FILTERS.map(f => (
-          <button
-            key={f.key}
-            onClick={() => setFilter(f.key)}
-            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition ${filter === f.key ? 'bg-brand-600 text-white border-brand-600' : 'bg-white border-slate-200 text-slate-600'}`}
-          >
-            {f.label}
-          </button>
-        ))}
+      <div className="flex gap-1 bg-slate-100 rounded-xl p-1 mx-4">
+        <button onClick={() => setTab('interactivo')} className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${tab === 'interactivo' ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500'}`}>Mapa interactivo</button>
+        <button onClick={() => setTab('parques')} className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${tab === 'parques' ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500'}`}>Mapas de Parques</button>
       </div>
 
-      <div className="flex-1 mx-4 rounded-xl overflow-hidden border border-slate-200 shadow-sm" style={{ minHeight: '60vh' }}>
-        <MapContainer center={[28.42, -81.52]} zoom={11} style={{ height: '100%', width: '100%' }}>
-          <TileLayer
-            attribution='&copy; OpenStreetMap contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          {(filter === 'all' || filter === 'parks') && (Object.entries(PARK_COORDS) as [ParkId, [number, number]][]).map(([park, coords]) => (
-            <Marker key={park} position={coords} icon={parkIcon(PARK_COLORS[park])}>
-              <Popup>
-                <strong>{PARK_LABELS[park]}</strong>
-              </Popup>
-            </Marker>
-          ))}
-        </MapContainer>
-      </div>
+      {tab === 'interactivo' && (
+        <>
+          <p className="text-xs text-slate-500 mt-2 px-4">Mapa libre (OpenStreetMap) — sin necesidad de cuenta de Google Cloud</p>
+          <div className="flex gap-1.5 px-4 pb-2 pt-2 overflow-x-auto">
+            {FILTERS.map(f => (
+              <button
+                key={f.key}
+                onClick={() => setFilter(f.key)}
+                className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition ${filter === f.key ? 'bg-brand-600 text-white border-brand-600' : 'bg-white border-slate-200 text-slate-600'}`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
 
-      <p className="text-[11px] text-slate-400 px-4 pt-2">
-        Nota: ubicación en vivo de los 20 familiares y pines de "fila aumentó aquí" requieren un backend
-        compartido (Supabase) para sincronizar entre dispositivos — ver Familia → Fase 2 en el README.
-      </p>
+          <div className="flex-1 mx-4 rounded-xl overflow-hidden border border-slate-200 shadow-sm" style={{ minHeight: '55vh' }}>
+            <MapContainer center={[28.42, -81.52]} zoom={11} style={{ height: '100%', width: '100%' }}>
+              <TileLayer
+                attribution='&copy; OpenStreetMap contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              {(filter === 'all' || filter === 'parks') && (Object.entries(PARK_COORDS) as [ParkId, [number, number]][]).map(([park, coords]) => (
+                <Marker key={park} position={coords} icon={parkIcon(PARK_COLORS[park])}>
+                  <Popup>
+                    <strong>{PARK_LABELS[park]}</strong>
+                  </Popup>
+                </Marker>
+              ))}
+            </MapContainer>
+          </div>
+
+          <p className="text-[11px] text-slate-400 px-4 pt-2">
+            Nota: ubicación en vivo de los 20 familiares y pines de "fila aumentó aquí" requieren un backend
+            compartido (Supabase) para sincronizar entre dispositivos — ver Familia → Fase 2 en el README.
+          </p>
+        </>
+      )}
+
+      {tab === 'parques' && (
+        <div className="px-4 pt-2 space-y-2.5">
+          <p className="text-xs text-slate-500">Sube una foto del mapa oficial de cada parque y se guarda aquí.</p>
+          {PARKS_ORDER.map(parkId => <ParkMapCard key={parkId} parkId={parkId} />)}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ParkMapCard({ parkId }: { parkId: ParkId }) {
+  const [open, setOpen] = useState(false);
+  const [mapUrl, setMapUrl] = useState<string | null>(() => db.getParkMap(parkId));
+
+  const upload = (dataUrl: string) => {
+    db.setParkMap(parkId, dataUrl);
+    setMapUrl(dataUrl);
+    setOpen(true);
+  };
+
+  return (
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center gap-3 p-3.5 text-left">
+        <div className="w-3 h-10 rounded-full shrink-0" style={{ backgroundColor: PARK_COLORS[parkId] }} />
+        <div className="flex-1">
+          <p className="text-sm font-semibold text-slate-800">Mapa de {PARK_LABELS[parkId]}</p>
+          <p className="text-xs text-slate-500 mt-0.5">{mapUrl ? 'Toca para ver' : 'Sin foto todavía'}</p>
+        </div>
+        {!mapUrl && <ImageIcon size={16} className="text-slate-300 shrink-0" />}
+        <ChevronDown size={16} className={`text-slate-400 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+      {open && (
+        <div className="px-3.5 pb-3.5">
+          {mapUrl && <img src={mapUrl} alt={`Mapa de ${PARK_LABELS[parkId]}`} className="w-full rounded-lg border border-slate-100 mb-2" />}
+          <PhotoUploader onUpload={upload} label={mapUrl ? 'Actualizar mapa' : 'Subir mapa'} />
+        </div>
+      )}
     </div>
   );
 }

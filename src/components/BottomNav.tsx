@@ -1,11 +1,10 @@
 import { NavLink } from 'react-router-dom';
-import { Home, CalendarDays, MapPin, Utensils, Sparkles, Bell } from 'lucide-react';
+import { Home, CalendarDays, Map, Sparkles, Bell } from 'lucide-react';
 
 const links = [
   { to: '/', icon: Home, label: 'Hoy', end: true },
   { to: '/itinerario', icon: CalendarDays, label: 'Itinerario' },
-  { to: '/mapa', icon: MapPin, label: 'Mapa' },
-  { to: '/epcot', icon: Utensils, label: 'Epcot' },
+  { to: '/mapa', icon: Map, label: 'Mapas' },
   { to: '/mas', icon: Sparkles, label: 'Más' },
   { to: '/alertas', icon: Bell, label: 'Alertas' },
 ];

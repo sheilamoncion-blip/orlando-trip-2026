@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, Cake, Search, X } from 'lucide-react';
+import BackButton from '../components/BackButton';
+import { Cake, Search, X } from 'lucide-react';
 import { PERSONALIZATION } from '../data/trip';
 import { PARK_LABELS } from '../types';
 import { db } from '../lib/db';
@@ -27,7 +27,7 @@ export default function PersonalizationShop() {
 
   return (
     <div className="p-4 pb-24 max-w-lg mx-auto space-y-4">
-      <Link to="/mas" className="inline-flex items-center gap-1 text-sm text-brand-600"><ArrowLeft size={14} /> Más</Link>
+      <BackButton fallback="/mas" label="Más" />
       <header>
         <h1 className="text-xl font-extrabold text-slate-800">Tienda de Personalización Disney</h1>
         <p className="text-sm text-slate-500">Grabados, bordados y recuerdos únicos</p>

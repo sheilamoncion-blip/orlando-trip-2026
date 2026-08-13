@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, Music2, Flame, Search, X } from 'lucide-react';
+import BackButton from '../components/BackButton';
+import { Music2, Flame, Search, X } from 'lucide-react';
 import { TIKTOK_IDEAS } from '../data/trip';
 import { PARK_LABELS } from '../types';
 import { db } from '../lib/db';
@@ -34,7 +34,7 @@ export default function TikTokIdeas() {
 
   return (
     <div className="p-4 pb-24 max-w-lg mx-auto space-y-3">
-      <Link to="/mas" className="inline-flex items-center gap-1 text-sm text-brand-600"><ArrowLeft size={14} /> Más</Link>
+      <BackButton fallback="/mas" label="Más" />
       <header>
         <h1 className="text-xl font-extrabold text-slate-800 flex items-center gap-2"><Music2 size={20} /> Ideas para TikTok</h1>
         <p className="text-sm text-slate-500">Videos sugeridos por parque</p>

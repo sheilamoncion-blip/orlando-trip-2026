@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, Trash2, Search, X } from 'lucide-react';
+import BackButton from '../components/BackButton';
+import { Trash2, Search, X } from 'lucide-react';
 import PhotoUploader from '../components/PhotoUploader';
 import { db } from '../lib/db';
 import type { PhotoBoardItem, ParkId } from '../types';
@@ -57,7 +57,7 @@ export default function PhotoBoard() {
 
   return (
     <div className="p-4 pb-24 max-w-lg mx-auto space-y-4">
-      <Link to="/mas" className="inline-flex items-center gap-1 text-sm text-brand-600"><ArrowLeft size={14} /> Más</Link>
+      <BackButton fallback="/mas" label="Más" />
       <header>
         <h1 className="text-xl font-extrabold text-slate-800">Tablero de Inspiración</h1>
         <p className="text-sm text-slate-500">Fotos de Pinterest + nuestras fotos — {recreated} recreadas</p>

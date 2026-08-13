@@ -116,6 +116,27 @@ export const db = {
     if (!all.includes(id)) { all.push(id); save('otp_fired_alarms', all); }
   },
 
+  // Family photos attached to a specific attraction/meal/character/show (itemId -> dataUrls[])
+  getItemPhotos: (itemId: string): string[] => load<Record<string, string[]>>('otp_item_photos', {})[itemId] || [],
+  addItemPhoto: (itemId: string, dataUrl: string) => {
+    const all = load<Record<string, string[]>>('otp_item_photos', {});
+    all[itemId] = [...(all[itemId] || []), dataUrl];
+    save('otp_item_photos', all);
+  },
+  removeItemPhoto: (itemId: string, index: number) => {
+    const all = load<Record<string, string[]>>('otp_item_photos', {});
+    all[itemId] = (all[itemId] || []).filter((_, i) => i !== index);
+    save('otp_item_photos', all);
+  },
+
+  // Uploaded park map images (parkId -> dataUrl)
+  getParkMap: (parkId: string): string | null => load<Record<string, string>>('otp_park_maps', {})[parkId] || null,
+  setParkMap: (parkId: string, dataUrl: string) => {
+    const all = load<Record<string, string>>('otp_park_maps', {});
+    all[parkId] = dataUrl;
+    save('otp_park_maps', all);
+  },
+
   // Group status text (since live GPS sharing needs a backend — see README)
   getGroupStatus: (): { name: string; status: string; updatedAt: string }[] => load('otp_group_status', []),
   setGroupStatus: (name: string, status: string) => {
