@@ -35,7 +35,11 @@ html, body, #root {
 
 /* App-wide backdrop — deliberately single-theme (a chosen aesthetic, not UI chrome) */
 html {
-  background: linear-gradient(120deg, #e7e2f7 0%, #c9cdef 55%, #aeb8ea 100%);
+  background-color: #c9cdef;
+  background-image: url('/fondo.png');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
   background-attachment: fixed;
 }
 
