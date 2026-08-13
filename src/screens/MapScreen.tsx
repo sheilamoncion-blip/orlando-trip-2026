@@ -90,7 +90,7 @@ export default function MapScreen() {
 
       {tab === 'parques' && (
         <div className="px-4 pt-2 space-y-2.5">
-          <p className="text-xs text-slate-500">Sube una foto del mapa oficial de cada parque y se guarda aquí.</p>
+          <p className="text-xs text-slate-500">Mapas oficiales de cada parque. Si falta alguno, súbelo (mejor si pesa poco — fotos muy grandes pueden fallar).</p>
           {PARKS_ORDER.map(parkId => <ParkMapCard key={parkId} parkId={parkId} />)}
         </div>
       )}
@@ -99,13 +99,21 @@ export default function MapScreen() {
 }
 
 function ParkMapCard({ parkId }: { parkId: ParkId }) {
+  const staticSrc = `/maps/${parkId}.jpg`;
   const [open, setOpen] = useState(false);
+  const [staticOk, setStaticOk] = useState(true);
   const [mapUrl, setMapUrl] = useState<string | null>(() => db.getParkMap(parkId));
 
+  const hasMap = staticOk || !!mapUrl;
+
   const upload = (dataUrl: string) => {
-    db.setParkMap(parkId, dataUrl);
-    setMapUrl(dataUrl);
-    setOpen(true);
+    try {
+      db.setParkMap(parkId, dataUrl);
+      setMapUrl(dataUrl);
+      setOpen(true);
+    } catch {
+      alert('Esa imagen es demasiado pesada para subirla desde la app. Pídele a Sheila que la coloque directo en el proyecto (public/maps/).');
+    }
   };
 
   return (
@@ -114,15 +122,19 @@ function ParkMapCard({ parkId }: { parkId: ParkId }) {
         <div className="w-3 h-10 rounded-full shrink-0" style={{ backgroundColor: PARK_COLORS[parkId] }} />
         <div className="flex-1">
           <p className="text-sm font-semibold text-slate-800">Mapa de {PARK_LABELS[parkId]}</p>
-          <p className="text-xs text-slate-500 mt-0.5">{mapUrl ? 'Toca para ver' : 'Sin foto todavía'}</p>
+          <p className="text-xs text-slate-500 mt-0.5">{hasMap ? 'Toca para ver' : 'Sin foto todavía'}</p>
         </div>
-        {!mapUrl && <ImageIcon size={16} className="text-slate-300 shrink-0" />}
+        {!hasMap && <ImageIcon size={16} className="text-slate-300 shrink-0" />}
         <ChevronDown size={16} className={`text-slate-400 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
         <div className="px-3.5 pb-3.5">
-          {mapUrl && <img src={mapUrl} alt={`Mapa de ${PARK_LABELS[parkId]}`} className="w-full rounded-lg border border-slate-100 mb-2" />}
-          <PhotoUploader onUpload={upload} label={mapUrl ? 'Actualizar mapa' : 'Subir mapa'} />
+          {staticOk ? (
+            <img src={staticSrc} alt={`Mapa de ${PARK_LABELS[parkId]}`} className="w-full rounded-lg border border-slate-100 mb-2" onError={() => setStaticOk(false)} />
+          ) : mapUrl ? (
+            <img src={mapUrl} alt={`Mapa de ${PARK_LABELS[parkId]}`} className="w-full rounded-lg border border-slate-100 mb-2" />
+          ) : null}
+          <PhotoUploader onUpload={upload} label={hasMap ? 'Actualizar mapa' : 'Subir mapa'} />
         </div>
       )}
     </div>
