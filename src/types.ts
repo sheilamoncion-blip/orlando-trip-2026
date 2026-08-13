@@ -188,6 +188,15 @@ export interface PhotoBoardItem {
   createdAt: string;
 }
 
+export interface FamilyMember {
+  id: string;
+  name: string;
+  age?: number;
+  phone?: string;
+  avatar?: string; // dataUrl
+  groupLabel: string; // e.g. "Mamá y yo", "Mi prima con su esposo e hijas"
+}
+
 export interface VisitedPark {
   parkId: ParkId;
   date: string;

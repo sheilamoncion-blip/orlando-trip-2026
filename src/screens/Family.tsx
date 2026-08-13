@@ -1,26 +1,54 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import BackButton from '../components/BackButton';
-import { Plus, X, MapPinned } from 'lucide-react';
+import PhotoUploader from '../components/PhotoUploader';
+import { Plus, X, MapPinned, Phone, Cake as CakeIcon, Users } from 'lucide-react';
 import { db } from '../lib/db';
+import type { FamilyMember } from '../types';
+
+function groupByLabel(members: FamilyMember[]): [string, FamilyMember[]][] {
+  const map = new Map<string, FamilyMember[]>();
+  members.forEach(m => {
+    (map.get(m.groupLabel) || map.set(m.groupLabel, []).get(m.groupLabel)!).push(m);
+  });
+  return Array.from(map.entries());
+}
+
+function initials(name: string): string {
+  return name.trim().split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase()).join('');
+}
 
 export default function Family() {
-  const [family, setFamily] = useState<string[]>(() => db.getFamily());
+  const [members, setMembers] = useState<FamilyMember[]>(() => db.getFamilyMembers());
+  const [selected, setSelected] = useState<FamilyMember | null>(null);
+  const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState('');
+  const [age, setAge] = useState('');
+  const [phone, setPhone] = useState('');
+  const [groupLabel, setGroupLabel] = useState('');
+  const [avatar, setAvatar] = useState('');
   const [groupStatus, setGroupStatus] = useState(() => db.getGroupStatus());
   const [myStatus, setMyStatus] = useState('');
 
-  const add = () => {
-    if (!name.trim()) return;
-    const updated = [...family, name.trim()];
-    setFamily(updated);
-    db.saveFamily(updated);
-    setName('');
+  const existingGroups = useMemo(() => Array.from(new Set(members.map(m => m.groupLabel))), [members]);
+  const grouped = useMemo(() => groupByLabel(members), [members]);
+
+  const addMember = () => {
+    if (!name.trim() || !groupLabel.trim()) return;
+    const member: FamilyMember = {
+      id: crypto.randomUUID(), name: name.trim(), age: age ? Number(age) : undefined,
+      phone: phone.trim() || undefined, avatar: avatar || undefined, groupLabel: groupLabel.trim(),
+    };
+    const updated = [...members, member];
+    setMembers(updated);
+    db.saveFamilyMembers(updated);
+    setName(''); setAge(''); setPhone(''); setGroupLabel(''); setAvatar(''); setShowForm(false);
   };
 
-  const remove = (n: string) => {
-    const updated = family.filter(f => f !== n);
-    setFamily(updated);
-    db.saveFamily(updated);
+  const removeMember = (id: string) => {
+    const updated = members.filter(m => m.id !== id);
+    setMembers(updated);
+    db.saveFamilyMembers(updated);
+    setSelected(null);
   };
 
   const shareStatus = () => {
@@ -31,28 +59,72 @@ export default function Family() {
     setMyStatus('');
   };
 
+  const companions = selected ? members.filter(m => m.groupLabel === selected.groupLabel && m.id !== selected.id) : [];
+
   return (
     <div className="p-4 pb-24 max-w-lg mx-auto space-y-4">
       <BackButton fallback="/mas" label="Más" />
-      <header>
-        <h1 className="text-xl font-extrabold text-slate-800">Familia</h1>
-        <p className="text-sm text-slate-500">{family.length} en la lista</p>
+      <header className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-extrabold text-slate-800">Familia</h1>
+          <p className="text-sm text-slate-500">{members.length} en la lista</p>
+        </div>
+        <button onClick={() => setShowForm(!showForm)} className="flex items-center gap-1 bg-brand-600 text-white text-xs font-medium px-3 py-2 rounded-lg">
+          <Plus size={14} /> Agregar
+        </button>
       </header>
 
-      <div className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-sm">
-        <div className="flex gap-2 mb-3">
-          <input value={name} onChange={e => setName(e.target.value)} onKeyDown={e => e.key === 'Enter' && add()} placeholder="Nombre" className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm bg-slate-50 focus:outline-none" />
-          <button onClick={add} className="bg-brand-600 text-white p-2 rounded-lg"><Plus size={16} /></button>
+      {showForm && (
+        <div className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-sm space-y-2">
+          <div className="flex items-center gap-3">
+            {avatar ? <img src={avatar} className="w-14 h-14 rounded-full object-cover border border-slate-200" /> : (
+              <div className="w-14 h-14 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center text-lg font-bold shrink-0">{name ? initials(name) : '?'}</div>
+            )}
+            <PhotoUploader onUpload={setAvatar} label="Subir avatar" />
+          </div>
+          <input value={name} onChange={e => setName(e.target.value)} placeholder="Nombre y apellido" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300" />
+          <div className="grid grid-cols-2 gap-2">
+            <input value={age} onChange={e => setAge(e.target.value)} type="number" placeholder="Edad" className="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300" />
+            <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="Teléfono" className="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300" />
+          </div>
+          <input
+            value={groupLabel}
+            onChange={e => setGroupLabel(e.target.value)}
+            list="group-options"
+            placeholder="Grupo (ej: Mamá y yo, Mi prima con su esposo e hijas)"
+            className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300"
+          />
+          <datalist id="group-options">
+            {existingGroups.map(g => <option key={g} value={g} />)}
+          </datalist>
+          <div className="flex gap-2">
+            <button onClick={addMember} className="flex-1 bg-brand-600 text-white py-2 rounded-lg text-sm font-medium">Guardar</button>
+            <button onClick={() => setShowForm(false)} className="px-4 py-2 text-sm text-slate-500">Cancelar</button>
+          </div>
         </div>
-        <div className="flex flex-wrap gap-1.5">
-          {family.map(f => (
-            <span key={f} className="inline-flex items-center gap-1 bg-slate-100 text-slate-700 text-xs px-2.5 py-1 rounded-full">
-              {f}
-              <button onClick={() => remove(f)}><X size={11} /></button>
-            </span>
-          ))}
-        </div>
-      </div>
+      )}
+
+      {grouped.length === 0 && !showForm && (
+        <p className="text-center text-sm text-slate-400 py-10">Agrega al primer familiar arriba</p>
+      )}
+
+      {grouped.map(([label, groupMembers]) => (
+        <section key={label}>
+          <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1.5"><Users size={12} /> {label}</h2>
+          <div className="flex flex-wrap gap-3">
+            {groupMembers.map(m => (
+              <button key={m.id} onClick={() => setSelected(m)} className="flex flex-col items-center gap-1 w-16">
+                {m.avatar ? (
+                  <img src={m.avatar} className="w-14 h-14 rounded-full object-cover border-2 border-white shadow" />
+                ) : (
+                  <div className="w-14 h-14 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center text-base font-bold border-2 border-white shadow">{initials(m.name)}</div>
+                )}
+                <span className="text-[10px] text-slate-600 text-center leading-tight line-clamp-2">{m.name}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      ))}
 
       <section>
         <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wide mb-2 flex items-center gap-1.5"><MapPinned size={14} /> ¿Dónde está cada quién?</h2>
@@ -62,7 +134,7 @@ export default function Family() {
         </p>
         <div className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-sm space-y-2">
           <div className="flex gap-2">
-            <input value={myStatus} onChange={e => setMyStatus(e.target.value)} onKeyDown={e => e.key === 'Enter' && shareStatus()} placeholder="Ej: En Space Mountain, nos vemos en 30 min" className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-xs bg-slate-50 focus:outline-none" />
+            <input value={myStatus} onChange={e => setMyStatus(e.target.value)} onKeyDown={e => e.key === 'Enter' && shareStatus()} placeholder="Ej: En Space Mountain, nos vemos en 30 min" className="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-xs bg-white focus:outline-none" />
             <button onClick={shareStatus} className="bg-brand-600 text-white px-3 py-2 rounded-lg text-xs font-medium">Compartir</button>
           </div>
           <div className="space-y-1.5 pt-1">
@@ -76,6 +148,45 @@ export default function Family() {
           </div>
         </div>
       </section>
+
+      {selected && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-4" onClick={() => setSelected(null)}>
+          <div className="bg-white rounded-2xl max-w-sm w-full p-5 space-y-3" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {selected.avatar ? (
+                  <img src={selected.avatar} className="w-16 h-16 rounded-full object-cover border border-slate-200" />
+                ) : (
+                  <div className="w-16 h-16 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center text-xl font-bold">{initials(selected.name)}</div>
+                )}
+                <div>
+                  <p className="text-base font-bold text-slate-800">{selected.name}</p>
+                  <p className="text-xs text-slate-500">{selected.groupLabel}</p>
+                </div>
+              </div>
+              <button onClick={() => setSelected(null)} className="text-slate-400"><X size={18} /></button>
+            </div>
+
+            <div className="space-y-1.5 text-sm">
+              {selected.age && <p className="flex items-center gap-2 text-slate-700"><CakeIcon size={14} className="text-slate-400" /> {selected.age} años</p>}
+              {selected.phone && <p className="flex items-center gap-2 text-slate-700"><Phone size={14} className="text-slate-400" /> {selected.phone}</p>}
+            </div>
+
+            {companions.length > 0 && (
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Acompañantes</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {companions.map(c => (
+                    <span key={c.id} className="text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full">{c.name}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <button onClick={() => removeMember(selected.id)} className="w-full text-center text-xs text-rose-500 pt-2">Eliminar de la lista</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import type { Comment, PhotoBoardItem } from '../types';
+import type { Comment, PhotoBoardItem, FamilyMember } from '../types';
 
 function load<T>(key: string, fallback: T): T {
   try {
@@ -73,9 +73,16 @@ export const db = {
     save('otp_tiktok', all);
   },
 
-  // Family roster
-  getFamily: (): string[] => load('otp_family', ['Sheila', 'Carlos Manuel']),
-  saveFamily: (names: string[]) => save('otp_family', names),
+  // Family members — grouped by family unit, with avatar/age/phone
+  getFamilyMembers: (): FamilyMember[] => load('otp_family_members', []),
+  saveFamilyMembers: (members: FamilyMember[]) => save('otp_family_members', members),
+
+  // Simple name list — used by assignee dropdowns (Epcot challenge, TikTok/Instagram ideas)
+  getFamily: (): string[] => {
+    const members = load<FamilyMember[]>('otp_family_members', []);
+    if (members.length > 0) return members.map(m => m.name);
+    return load('otp_family', ['Sheila', 'Carlos Manuel']);
+  },
 
   // Photo inspiration board
   getPhotoBoard: (): PhotoBoardItem[] => load('otp_photoboard', []),
