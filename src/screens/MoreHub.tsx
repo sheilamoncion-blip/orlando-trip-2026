@@ -17,7 +17,7 @@ const LINKS = [
 type Tab = 'parques' | 'explorar';
 
 export default function MoreHub() {
-  const [tab, setTab] = useState<Tab>('parques');
+  const [tab, setTab] = useState<Tab>('explorar');
 
   return (
     <div className="p-4 pb-24 max-w-lg mx-auto space-y-4">
@@ -26,8 +26,8 @@ export default function MoreHub() {
       </header>
 
       <div className="flex gap-1 bg-slate-100 rounded-xl p-1">
-        <button onClick={() => setTab('parques')} className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${tab === 'parques' ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500'}`}>Parques que visitaremos</button>
         <button onClick={() => setTab('explorar')} className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${tab === 'explorar' ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500'}`}>Explorar</button>
+        <button onClick={() => setTab('parques')} className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${tab === 'parques' ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500'}`}>Parques que visitaremos</button>
       </div>
 
       {tab === 'parques' && (
