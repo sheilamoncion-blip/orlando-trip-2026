@@ -14,7 +14,14 @@
 }
 
 :root {
-  color-scheme: light dark;
+  /* Forced light — the app commits to one look (gradient backdrop + white cards),
+     so native form controls must not switch to dark UA styling and go invisible. */
+  color-scheme: light;
+}
+
+input, select, textarea {
+  color: #1e293b;
+  background-color: #ffffff;
 }
 
 * {
@@ -24,11 +31,41 @@
 html, body, #root {
   margin: 0;
   min-height: 100svh;
-  background: #f8fafc;
 }
 
-.dark html, .dark body, .dark #root {
-  background: #0f172a;
+/* App-wide backdrop — deliberately single-theme (a chosen aesthetic, not UI chrome) */
+html {
+  background: linear-gradient(120deg, #e7e2f7 0%, #c9cdef 55%, #aeb8ea 100%);
+  background-attachment: fixed;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.15; transform: scale(0.8); }
+  50% { opacity: 0.9; transform: scale(1.15); }
+}
+
+.sparkle-field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sparkle {
+  position: absolute;
+  color: #ffffff;
+  filter: drop-shadow(0 0 3px rgba(255,255,255,0.6));
+  animation: twinkle 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sparkle { animation: none; opacity: 0.5; }
+}
+
+#root {
+  position: relative;
+  z-index: 1;
 }
 
 body {

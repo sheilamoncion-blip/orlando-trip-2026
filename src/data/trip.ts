@@ -1,4 +1,4 @@
-import type { TripDay, Attraction, Meal, ShowItem, CharacterMeet, Country, TikTokIdea, PersonalizationItem, BirthdayPerson, AreaGuide } from '../types';
+import type { TripDay, Attraction, Meal, ShowItem, CharacterMeet, Country, TikTokIdea, InstagramIdea, PersonalizationItem, BirthdayPerson, AreaGuide, VisitedPark } from '../types';
 import { UNIVERSAL_STUDIOS_ATTRACTIONS, UNIVERSAL_STUDIOS_MEALS, UNIVERSAL_STUDIOS_CHARACTERS, UNIVERSAL_STUDIOS_AREA_GUIDES } from './universalStudiosAreas';
 import { EPIC_UNIVERSE_ATTRACTIONS, EPIC_UNIVERSE_MEALS, EPIC_UNIVERSE_CHARACTERS, EPIC_UNIVERSE_AREA_GUIDES } from './epicUniverseAreas';
 import { MAGIC_KINGDOM_ATTRACTIONS, MAGIC_KINGDOM_MEALS, MAGIC_KINGDOM_CHARACTERS, MAGIC_KINGDOM_AREA_GUIDES } from './magicKingdomAreas';
@@ -14,6 +14,14 @@ export const TRIP_DAYS: TripDay[] = [
   { date: '2026-08-28', label: 'Día libre (medio día opcional)', park: null, isFreeDay: true, freeDayPlan: 'Medio día opcional, compras' },
   { date: '2026-08-29', label: 'Epcot', park: 'epcot', isFreeDay: false, estimatedHours: 10 },
   { date: '2026-08-30', label: 'Salida', park: null, isFreeDay: true, freeDayPlan: 'Empacar, viaje de regreso' },
+];
+
+export const VISITED_PARKS: VisitedPark[] = [
+  { parkId: 'universal', date: '2026-08-23', dayLabel: 'Día 1 — Carlos 45' },
+  { parkId: 'islands', date: '2026-08-23', dayLabel: 'Día 1 — Carlos 45' },
+  { parkId: 'epic', date: '2026-08-25', dayLabel: 'Día 2 — Sheila 37' },
+  { parkId: 'magic-kingdom', date: '2026-08-27', dayLabel: 'Día 3' },
+  { parkId: 'epcot', date: '2026-08-29', dayLabel: 'Día 4 — Festival de Comida y Vino' },
 ];
 
 export const BIRTHDAYS: BirthdayPerson[] = [
@@ -285,6 +293,16 @@ export const TIKTOK_IDEAS: TikTokIdea[] = [
   tk('Vlog Disney', 'Canción trending', 'Vlog completo del día, en 4-5 partes.', 180, 'Todo el día', 5, 'any'),
 ];
 
+export const INSTAGRAM_IDEAS: InstagramIdea[] = [
+  ig('Carrusel del día', 'Carrusel', '8-10 fotos curadas del día: atracciones, comida, familia — cierra con una foto grupal.', ['#OrlandoTrip2026', '#FamiliaLorenzo', '#DisneyWorld'], 'Noche, después de revisar todas las fotos', 5, 'any'),
+  ig('Reel de transformación', 'Reel', 'Antes/después: la fila vs. la cara de emoción en la atracción — corte rápido con audio trending.', ['#UniversalOrlando', '#ThemePark'], 'Justo al bajar de la atracción', 4, 'any'),
+  ig('Story "encuesta"', 'Story', 'Pregunta a los seguidores: "¿Cuál probamos primero?" con foto de 2-3 platillos del reto de Epcot.', ['#EatAroundTheWorld'], 'Durante el reto de los 11 países', 3, 'epcot'),
+  ig('Reel POV atracción', 'Reel', 'Grabación en primera persona (POV) de la fila hasta subir — bien editado con música que combine el ritmo.', ['#POV', '#Universal'], 'En la fila, cámara al frente', 5, 'any'),
+  ig('Story cuenta regresiva cumpleaños', 'Story', 'Cuenta regresiva de Instagram con foto de Carlos/Sheila el día de su cumpleaños.', ['#Cumpleaños45', '#Cumpleaños37'], 'La mañana del cumpleaños', 4, 'any'),
+  ig('Carrusel comparativo', 'Carrusel', 'Foto de referencia de Pinterest al lado de la foto real de la familia recreándola.', ['#DisneyBound'], 'Después de recrear varias fotos del tablero', 4, 'any'),
+  ig('Reel resumen del viaje', 'Reel', 'Compilado final de los 9 días — el más importante, guardar para el último día.', ['#OrlandoTrip2026', '#FamiliaLorenzo'], 'Último día, antes de salir', 5, 'any'),
+];
+
 export const PERSONALIZATION: PersonalizationItem[] = [
   p('magic-kingdom', 'Perfume Dior grabado', '$150-200', 'Grabado personalizado gratis', '2-3 horas de proceso', 'Guerlain Boutique / Perfumería en Main Street', 'sheila'),
   p('magic-kingdom', 'Orejas personalizadas', '$35-80', 'Bordado con nombre gratis', '30-45 min', 'Bibbidi Bobbidi Boutique / tiendas de Main Street', 'sheila'),
@@ -314,6 +332,9 @@ function country(id: string, name: string, flag: string, foods: ReturnType<typeo
 }
 function tk(title: string, audio: string, description: string, durationSec: number, bestTime: string, viralPotential: 1|2|3|4|5, park: TikTokIdea['park']): TikTokIdea {
   return { id: slug(title), title, audio, description, durationSec, bestTime, viralPotential, park };
+}
+function ig(title: string, format: InstagramIdea['format'], description: string, hashtags: string[], bestTime: string, viralPotential: 1|2|3|4|5, park: InstagramIdea['park']): InstagramIdea {
+  return { id: slug(title), title, format, description, hashtags, bestTime, viralPotential, park };
 }
 function p(park: PersonalizationItem['park'], name: string, priceRange: string, customizable: string, orderTime: string, location: string, birthdayPick?: 'carlos' | 'sheila'): PersonalizationItem {
   return { id: slug(park + '-' + name), park, name, priceRange, customizable, orderTime, location, birthdayPick };

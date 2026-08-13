@@ -133,6 +133,17 @@ export interface TikTokIdea {
   park: ParkId | 'any';
 }
 
+export interface InstagramIdea {
+  id: string;
+  title: string;
+  format: 'Reel' | 'Carrusel' | 'Story';
+  description: string;
+  hashtags: string[];
+  bestTime: string;
+  viralPotential: 1 | 2 | 3 | 4 | 5;
+  park: ParkId | 'any';
+}
+
 export interface PersonalizationItem {
   id: string;
   park: ParkId;
@@ -166,12 +177,21 @@ export interface Comment {
 
 export interface PhotoBoardItem {
   id: string;
+  type: 'reference' | 'ours'; // 'reference' = foto real de Pinterest subida; 'ours' = foto de la familia
   park: ParkId | 'any';
-  refUrl: string;
-  refNote: string;
-  dataUrl?: string;
+  dataUrl: string;
   filename?: string;
+  whereToStand?: string;
+  bestTime?: string;
+  note?: string;
+  uploadedBy?: string;
   createdAt: string;
+}
+
+export interface VisitedPark {
+  parkId: ParkId;
+  date: string;
+  dayLabel: string;
 }
 
 export const PARK_LABELS: Record<ParkId, string> = {

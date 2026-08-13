@@ -1,28 +1,42 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, Clock, Ruler, ExternalLink, Users2, Check, ChevronDown, Shirt } from 'lucide-react';
+import { ArrowLeft, Clock, Ruler, ExternalLink, Users2, Check, ChevronDown, Shirt, Search, X } from 'lucide-react';
 import { ATTRACTIONS, MEALS, SHOWS, CHARACTERS, BIRTHDAYS, AREA_GUIDES } from '../data/trip';
 import { PARK_LABELS } from '../types';
-import type { Attraction, Meal, CharacterMeet } from '../types';
+import type { Attraction, Meal, CharacterMeet, ShowItem } from '../types';
 import { TasteStars, PhotogenicRating, IntensityDots } from '../components/RatingStars';
 import CommentThread from '../components/CommentThread';
 import { db } from '../lib/db';
 import { fetchLiveWaitTimes, matchLiveWait, type LiveRideStatus } from '../lib/waitTimes';
 import BirthdayBanner from '../components/BirthdayBanner';
 
-function groupByArea<T extends { area?: string }>(items: T[]): [string, T[]][] {
+function groupByArea<T extends { area?: string }>(items: T[], areaOrder?: string[]): [string, T[]][] {
   const map = new Map<string, T[]>();
   items.forEach(i => {
     const key = i.area || 'General';
     (map.get(key) || map.set(key, []).get(key)!).push(i);
   });
-  return Array.from(map.entries());
+  if (!areaOrder) return Array.from(map.entries());
+  const ordered: [string, T[]][] = [];
+  areaOrder.forEach(area => { if (map.has(area)) { ordered.push([area, map.get(area)!]); map.delete(area); } });
+  map.forEach((v, k) => ordered.push([k, v]));
+  return ordered;
 }
+
+function matchesQuery(query: string, ...fields: (string | undefined)[]): boolean {
+  if (!query.trim()) return true;
+  const q = query.toLowerCase();
+  return fields.some(f => f?.toLowerCase().includes(q));
+}
+
+type Tab = 'atracciones' | 'comidas' | 'shows' | 'personajes';
 
 export default function DayDetail() {
   const { date } = useParams<{ date: string }>();
   const [liveRides, setLiveRides] = useState<LiveRideStatus[] | null>(null);
   const [, forceRerender] = useState(0);
+  const [query, setQuery] = useState('');
+  const [tab, setTab] = useState<Tab>('atracciones');
 
   const attractions = useMemo(() => ATTRACTIONS.filter(a => a.day === date), [date]);
   const meals = useMemo(() => MEALS.filter(m => m.day === date), [date]);
@@ -32,11 +46,14 @@ export default function DayDetail() {
   const primaryPark = attractions[0]?.park || meals[0]?.park;
   const areasToday = Array.from(new Set(attractions.map(a => a.area).filter(Boolean))) as string[];
   const guidesToday = AREA_GUIDES.filter(g => areasToday.includes(g.name));
+  const characters = useMemo(() => CHARACTERS.filter(c => parksToday.includes(c.park)), [parksToday]);
 
   useEffect(() => {
     if (!primaryPark) return;
     fetchLiveWaitTimes(primaryPark).then(setLiveRides);
   }, [primaryPark]);
+
+  useEffect(() => { setQuery(''); }, [tab]);
 
   const toggleDone = (id: string) => {
     db.setDone(id, !db.isDone(id));
@@ -52,9 +69,23 @@ export default function DayDetail() {
     );
   }
 
-  const attractionsByArea = groupByArea(attractions);
-  const mealsByArea = groupByArea(meals);
-  const charactersByArea = groupByArea(CHARACTERS.filter(c => parksToday.includes(c.park)));
+  const filteredAttractions = attractions.filter(a => matchesQuery(query, a.name, a.area, a.photoTip));
+  const filteredMeals = meals.filter(m => matchesQuery(query, m.name, m.area, m.recommended.join(' ')));
+  const filteredShows = shows.filter(s => matchesQuery(query, s.name, s.location));
+  const filteredCharacters = characters.filter(c => matchesQuery(query, c.name, c.area, c.freebies.join(' ')));
+
+  const attractionsByArea = groupByArea(filteredAttractions);
+  const areaOrder = attractionsByArea.map(([area]) => area);
+  const mealsByArea = groupByArea(filteredMeals, areaOrder);
+  const charactersByArea = groupByArea(filteredCharacters, areaOrder);
+
+  const ALL_TABS: { key: Tab; label: string; count: number }[] = [
+    { key: 'atracciones' as Tab, label: 'Áreas', count: attractions.length },
+    { key: 'comidas' as Tab, label: 'Comidas', count: meals.length },
+    { key: 'shows' as Tab, label: 'Shows', count: shows.length },
+    { key: 'personajes' as Tab, label: 'Personajes', count: characters.length },
+  ];
+  const TABS = ALL_TABS.filter(t => t.count > 0);
 
   return (
     <div className="p-4 pb-24 space-y-4 max-w-lg mx-auto">
@@ -72,62 +103,107 @@ export default function DayDetail() {
         </Link>
       )}
 
-      {attractionsByArea.map(([area, items]) => {
-        const guide = guidesToday.find(g => g.name === area);
-        return (
-          <section key={area}>
-            <div className="flex items-center gap-2 mb-2">
-              {guide && <span className="text-lg">{guide.emoji}</span>}
-              <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wide">{area}</h2>
-            </div>
-            {guide && <AreaGuideBox guide={guide.guide} bestFor={guide.bestFor} walkFrom={guide.walkFrom} />}
-            <div className="space-y-3 mt-2">
-              {items.map(a => (
-                <AttractionCard key={a.id} attraction={a} live={liveRides ? matchLiveWait(liveRides, a.name) : null} done={db.isDone(a.id)} onToggle={() => toggleDone(a.id)} />
+      <div className="flex gap-1 bg-slate-100 rounded-xl p-1 overflow-x-auto">
+        {TABS.map(t => (
+          <button
+            key={t.key}
+            onClick={() => setTab(t.key)}
+            className={`flex-1 min-w-0 py-2 px-2 rounded-lg text-xs font-medium whitespace-nowrap transition ${tab === t.key ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500'}`}
+          >
+            {t.label} <span className="text-[10px] text-slate-400">({t.count})</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="relative">
+        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+        <input
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          placeholder={`Buscar en ${TABS.find(t => t.key === tab)?.label.toLowerCase() || ''}...`}
+          className="w-full border border-slate-200 rounded-xl pl-9 pr-8 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300"
+        />
+        {query && (
+          <button onClick={() => setQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+            <X size={14} />
+          </button>
+        )}
+      </div>
+
+      {tab === 'atracciones' && (
+        attractionsByArea.length === 0 ? <EmptyState query={query} /> :
+        attractionsByArea.map(([area, items]) => {
+          const guide = guidesToday.find(g => g.name === area);
+          return (
+            <section key={area}>
+              <div className="flex items-center gap-2 mb-2">
+                {guide && <span className="text-lg">{guide.emoji}</span>}
+                <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wide">{area}</h2>
+              </div>
+              {guide && <AreaGuideBox guide={guide.guide} bestFor={guide.bestFor} walkFrom={guide.walkFrom} />}
+              <div className="space-y-3 mt-2">
+                {items.map(a => (
+                  <AttractionCard key={a.id} attraction={a} live={liveRides ? matchLiveWait(liveRides, a.name) : null} done={db.isDone(a.id)} onToggle={() => toggleDone(a.id)} />
+                ))}
+              </div>
+            </section>
+          );
+        })
+      )}
+
+      {tab === 'comidas' && (
+        mealsByArea.length === 0 ? <EmptyState query={query} /> :
+        mealsByArea.map(([area, items]) => (
+          <section key={`meals-${area}`}>
+            <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wide mb-2">{area}</h2>
+            <div className="space-y-3">
+              {items.map(m => (
+                <MealCard key={m.id} meal={m} done={db.isDone(m.id)} onToggle={() => toggleDone(m.id)} />
               ))}
             </div>
           </section>
-        );
-      })}
-
-      {mealsByArea.map(([area, items]) => (
-        <section key={`meals-${area}`}>
-          <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wide mb-2">Comidas — {area}</h2>
-          <div className="space-y-3">
-            {items.map(m => (
-              <MealCard key={m.id} meal={m} done={db.isDone(m.id)} onToggle={() => toggleDone(m.id)} />
-            ))}
-          </div>
-        </section>
-      ))}
-
-      {shows.length > 0 && (
-        <section>
-          <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wide mb-2">Shows</h2>
-          <div className="space-y-3">
-            {shows.map(s => (
-              <div key={s.id} className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-slate-800">{s.name}</h3>
-                  {s.mustSee && <span className="text-[10px] font-bold bg-rose-100 text-rose-600 px-2 py-0.5 rounded-full">IMPERDIBLE</span>}
-                </div>
-                <p className="text-xs text-slate-500 mt-1">{s.times.join(' · ')} · {s.durationMin} min · {s.location}</p>
-                <CommentThread threadId={s.id} />
-              </div>
-            ))}
-          </div>
-        </section>
+        ))
       )}
 
-      {charactersByArea.map(([area, items]) => (
-        <section key={`chars-${area}`}>
-          <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wide mb-2">Personajes — {area}</h2>
-          <div className="space-y-2">
-            {items.map(c => <CharacterCard key={c.id} character={c} />)}
-          </div>
-        </section>
-      ))}
+      {tab === 'shows' && (
+        filteredShows.length === 0 ? <EmptyState query={query} /> : (
+          <section>
+            <div className="space-y-3">
+              {filteredShows.map((s: ShowItem) => (
+                <div key={s.id} className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-semibold text-slate-800">{s.name}</h3>
+                    {s.mustSee && <span className="text-[10px] font-bold bg-rose-100 text-rose-600 px-2 py-0.5 rounded-full">IMPERDIBLE</span>}
+                  </div>
+                  <p className="text-xs text-slate-500 mt-1">{s.times.join(' · ')} · {s.durationMin} min · {s.location}</p>
+                  <CommentThread threadId={s.id} />
+                </div>
+              ))}
+            </div>
+          </section>
+        )
+      )}
+
+      {tab === 'personajes' && (
+        charactersByArea.length === 0 ? <EmptyState query={query} /> :
+        charactersByArea.map(([area, items]) => (
+          <section key={`chars-${area}`}>
+            <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wide mb-2">{area}</h2>
+            <div className="space-y-2">
+              {items.map(c => <CharacterCard key={c.id} character={c} />)}
+            </div>
+          </section>
+        ))
+      )}
     </div>
+  );
+}
+
+function EmptyState({ query }: { query: string }) {
+  return (
+    <p className="text-center text-sm text-slate-400 py-10">
+      {query ? `Nada coincide con "${query}"` : 'Nada por aquí todavía'}
+    </p>
   );
 }
 

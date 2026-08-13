@@ -1,21 +1,29 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Cake } from 'lucide-react';
+import { ArrowLeft, Cake, Search, X } from 'lucide-react';
 import { PERSONALIZATION } from '../data/trip';
 import { PARK_LABELS } from '../types';
 import { db } from '../lib/db';
 
 export default function PersonalizationShop() {
   const [, forceRerender] = useState(0);
-  const byPark = PERSONALIZATION.reduce<Record<string, typeof PERSONALIZATION>>((acc, p) => {
-    (acc[p.park] ||= []).push(p);
-    return acc;
-  }, {});
+  const [query, setQuery] = useState('');
 
   const toggle = (id: string) => {
     db.setOrdered(id, !db.isOrdered(id));
     forceRerender(n => n + 1);
   };
+
+  const filtered = PERSONALIZATION.filter(item => {
+    if (!query.trim()) return true;
+    const q = query.toLowerCase();
+    return item.name.toLowerCase().includes(q) || item.location.toLowerCase().includes(q);
+  });
+
+  const byPark = filtered.reduce<Record<string, typeof PERSONALIZATION>>((acc, p) => {
+    (acc[p.park] ||= []).push(p);
+    return acc;
+  }, {});
 
   return (
     <div className="p-4 pb-24 max-w-lg mx-auto space-y-4">
@@ -24,6 +32,14 @@ export default function PersonalizationShop() {
         <h1 className="text-xl font-extrabold text-slate-800">Tienda de Personalización Disney</h1>
         <p className="text-sm text-slate-500">Grabados, bordados y recuerdos únicos</p>
       </header>
+
+      <div className="relative">
+        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+        <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Buscar producto o lugar..." className="w-full border border-slate-200 rounded-xl pl-9 pr-8 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300" />
+        {query && <button onClick={() => setQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"><X size={14} /></button>}
+      </div>
+
+      {Object.keys(byPark).length === 0 && <p className="text-center text-sm text-slate-400 py-10">Nada coincide con tu búsqueda</p>}
 
       {Object.entries(byPark).map(([park, items]) => (
         <section key={park}>

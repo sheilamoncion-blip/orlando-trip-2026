@@ -1,11 +1,20 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Sun, Home } from 'lucide-react';
+import { ArrowLeft, Sun, Home, Search, X } from 'lucide-react';
 import { SHOWS } from '../data/trip';
 import { PARK_LABELS, PARK_COLORS } from '../types';
 import CommentThread from '../components/CommentThread';
 
 export default function Shows() {
-  const byPark = SHOWS.reduce<Record<string, typeof SHOWS>>((acc, s) => {
+  const [query, setQuery] = useState('');
+
+  const filtered = SHOWS.filter(s => {
+    if (!query.trim()) return true;
+    const q = query.toLowerCase();
+    return s.name.toLowerCase().includes(q) || s.location.toLowerCase().includes(q);
+  });
+
+  const byPark = filtered.reduce<Record<string, typeof SHOWS>>((acc, s) => {
     (acc[s.park] ||= []).push(s);
     return acc;
   }, {});
@@ -17,6 +26,14 @@ export default function Shows() {
         <h1 className="text-xl font-extrabold text-slate-800">Shows por Parque</h1>
         <p className="text-sm text-slate-500">Horarios, duración y dónde verlos</p>
       </header>
+
+      <div className="relative">
+        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+        <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Buscar show o ubicación..." className="w-full border border-slate-200 rounded-xl pl-9 pr-8 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300" />
+        {query && <button onClick={() => setQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"><X size={14} /></button>}
+      </div>
+
+      {Object.keys(byPark).length === 0 && <p className="text-center text-sm text-slate-400 py-10">Nada coincide con tu búsqueda</p>}
 
       {Object.entries(byPark).map(([park, shows]) => (
         <section key={park}>

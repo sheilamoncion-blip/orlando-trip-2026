@@ -17,6 +17,14 @@ export interface TikTokStatus {
   posted: boolean;
 }
 
+export interface Reservation {
+  id: string;
+  name: string;
+  description: string;
+  who: string[];
+  dateTime: string;
+}
+
 export const db = {
   // Done state for attractions/meals/characters (keyed by item id)
   isDone: (itemId: string): boolean => load<Record<string, boolean>>('otp_done', {})[itemId] || false,
@@ -97,9 +105,16 @@ export const db = {
     save('otp_wait_manual', all);
   },
 
-  // Reservations / Lightning Lane reminders
-  getReservations: (): { id: string; name: string; dateTime: string; kind: 'reserva' | 'lightning-lane' }[] => load('otp_reservations', []),
-  saveReservations: (list: { id: string; name: string; dateTime: string; kind: 'reserva' | 'lightning-lane' }[]) => save('otp_reservations', list),
+  // Reservations / reminders — nombre, descripción, quiénes, hora
+  getReservations: (): Reservation[] => load('otp_reservations', []),
+  saveReservations: (list: Reservation[]) => save('otp_reservations', list),
+
+  // Alarms already fired (so we don't beep every check interval)
+  getFiredAlarms: (): string[] => load('otp_fired_alarms', []),
+  markAlarmFired: (id: string) => {
+    const all = load<string[]>('otp_fired_alarms', []);
+    if (!all.includes(id)) { all.push(id); save('otp_fired_alarms', all); }
+  },
 
   // Group status text (since live GPS sharing needs a backend — see README)
   getGroupStatus: (): { name: string; status: string; updatedAt: string }[] => load('otp_group_status', []),

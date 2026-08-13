@@ -1,5 +1,6 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import BottomNav from './components/BottomNav';
+import SparkleField from './components/SparkleField';
 import Dashboard from './screens/Dashboard';
 import ItineraryList from './screens/ItineraryList';
 import DayDetail from './screens/DayDetail';
@@ -10,6 +11,7 @@ import MoreHub from './screens/MoreHub';
 import Characters from './screens/Characters';
 import Shows from './screens/Shows';
 import TikTokIdeas from './screens/TikTokIdeas';
+import InstagramIdeas from './screens/InstagramIdeas';
 import PhotoBoard from './screens/PhotoBoard';
 import PersonalizationShop from './screens/PersonalizationShop';
 import BirthdaySpecial from './screens/BirthdaySpecial';
@@ -19,7 +21,8 @@ import Settings from './screens/Settings';
 export default function App() {
   return (
     <HashRouter>
-      <div className="min-h-[100svh] pb-16">
+      <SparkleField />
+      <div className="min-h-[100svh] pb-16 relative z-10">
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/itinerario" element={<ItineraryList />} />
@@ -31,6 +34,7 @@ export default function App() {
           <Route path="/personajes" element={<Characters />} />
           <Route path="/shows" element={<Shows />} />
           <Route path="/tiktok" element={<TikTokIdeas />} />
+          <Route path="/instagram" element={<InstagramIdeas />} />
           <Route path="/fotos" element={<PhotoBoard />} />
           <Route path="/tienda" element={<PersonalizationShop />} />
           <Route path="/cumpleanos/:id" element={<BirthdaySpecial />} />
