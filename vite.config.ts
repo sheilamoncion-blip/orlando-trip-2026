@@ -25,8 +25,15 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+        globPatterns: ['**/*.{js,css,html,svg,ico}'],
+        globIgnores: ['stickers/**', 'maps/**', 'fondo.png'],
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         runtimeCaching: [
+          {
+            urlPattern: /\.(png|jpg|jpeg)$/,
+            handler: 'CacheFirst',
+            options: { cacheName: 'images-cache', expiration: { maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 30 } },
+          },
           {
             urlPattern: /^https:\/\/api\.themeparks\.wiki\/.*/,
             handler: 'NetworkFirst',

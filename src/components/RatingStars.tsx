@@ -20,6 +20,23 @@ export function PhotogenicRating({ value }: { value: number }) {
   );
 }
 
+export function OurStars({ value, onChange, size = 16 }: { value: number; onChange: (v: number) => void; size?: number }) {
+  return (
+    <span className="inline-flex items-center gap-0.5">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <button
+          key={i}
+          type="button"
+          onClick={() => onChange(i + 1 === value ? 0 : i + 1)}
+          className="p-0.5 -m-0.5"
+        >
+          <Star size={size} className={i < value ? 'fill-brand-500 text-brand-500' : 'text-gray-300'} />
+        </button>
+      ))}
+    </span>
+  );
+}
+
 export function IntensityDots({ value }: { value: number }) {
   return (
     <span className="inline-flex items-center gap-0.5" title={`Intensidad: ${value}/5`}>

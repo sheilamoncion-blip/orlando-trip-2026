@@ -1,4 +1,4 @@
-import type { Comment, PhotoBoardItem, FamilyMember } from '../types';
+import type { Comment, PhotoBoardItem, FamilyMember, ActivityUpdate } from '../types';
 
 function load<T>(key: string, fallback: T): T {
   try {
@@ -15,6 +15,11 @@ export interface TikTokStatus {
   filmed: boolean;
   edited: boolean;
   posted: boolean;
+}
+
+export interface MyMealStatus {
+  tried: boolean;
+  rating?: number; // 1-5
 }
 
 export interface Reservation {
@@ -152,5 +157,37 @@ export const db = {
     const entry = { name, status, updatedAt: new Date().toISOString() };
     if (idx >= 0) all[idx] = entry; else all.push(entry);
     save('otp_group_status', all);
+  },
+
+  // "Quién soy yo" — nombre del familiar usando este dispositivo (Ajustes)
+  getMe: (): string => load('otp_me', ''),
+  setMe: (name: string) => save('otp_me', name),
+
+  // Interés en visitar un restaurante/venue (venueKey -> nombres de familiares)
+  getVisitInterest: (venueKey: string): string[] => load<Record<string, string[]>>('otp_visit_interest', {})[venueKey] || [],
+  toggleVisitInterest: (venueKey: string, name: string) => {
+    const all = load<Record<string, string[]>>('otp_visit_interest', {});
+    const list = all[venueKey] || [];
+    all[venueKey] = list.includes(name) ? list.filter(n => n !== name) : [...list, name];
+    save('otp_visit_interest', all);
+    return all[venueKey];
+  },
+
+  // Si lo probé + mi calificación personal, por plato (itemId -> { tried, rating })
+  getMyMealStatus: (itemId: string): MyMealStatus => load<Record<string, MyMealStatus>>('otp_my_meal_status', {})[itemId] || { tried: false },
+  setMyMealStatus: (itemId: string, status: MyMealStatus) => {
+    const all = load<Record<string, MyMealStatus>>('otp_my_meal_status', {});
+    all[itemId] = status;
+    save('otp_my_meal_status', all);
+  },
+
+  // Feed de actividad ("Sheila comió Butterbeer en Diagon Alley y le dio 4/5")
+  getUpdates: (): ActivityUpdate[] => load<ActivityUpdate[]>('otp_updates', []),
+  addUpdate: (who: string, text: string, rating?: number, emoji?: string) => {
+    const all = load<ActivityUpdate[]>('otp_updates', []);
+    const update: ActivityUpdate = { id: crypto.randomUUID(), who, text, rating, emoji, createdAt: new Date().toISOString() };
+    all.unshift(update);
+    save('otp_updates', all.slice(0, 100));
+    return update;
   },
 };

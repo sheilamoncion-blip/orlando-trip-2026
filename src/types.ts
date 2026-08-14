@@ -204,6 +204,15 @@ export interface VisitedPark {
   dayLabel: string;
 }
 
+export interface ActivityUpdate {
+  id: string;
+  who: string;
+  text: string; // e.g. "comió Butterbeer en Diagon Alley"
+  rating?: number; // 1-5, opcional
+  emoji?: string;
+  createdAt: string;
+}
+
 export const PARK_LABELS: Record<ParkId, string> = {
   universal: 'Universal Studios',
   islands: 'Islands of Adventure',

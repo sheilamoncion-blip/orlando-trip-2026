@@ -2,13 +2,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import BackButton from '../components/BackButton';
 import ItemPhotos from '../components/ItemPhotos';
-import { Clock, Ruler, ExternalLink, Users2, Check, ChevronDown, Shirt, Search, X } from 'lucide-react';
+import { Clock, Ruler, ExternalLink, Users2, Check, ChevronDown, Shirt, Search, X, Heart } from 'lucide-react';
 import { ATTRACTIONS, MEALS, SHOWS, CHARACTERS, BIRTHDAYS, AREA_GUIDES } from '../data/trip';
 import { PARK_LABELS } from '../types';
 import type { Attraction, Meal, CharacterMeet, ShowItem } from '../types';
-import { TasteStars, PhotogenicRating, IntensityDots } from '../components/RatingStars';
+import { TasteStars, PhotogenicRating, IntensityDots, OurStars } from '../components/RatingStars';
 import CommentThread from '../components/CommentThread';
-import { db } from '../lib/db';
+import { db, type MyMealStatus } from '../lib/db';
+import { ensureMe } from '../lib/useMe';
 import { fetchLiveWaitTimes, matchLiveWait, type LiveRideStatus } from '../lib/waitTimes';
 import BirthdayBanner from '../components/BirthdayBanner';
 
@@ -293,8 +294,20 @@ function AttractionCard({ attraction, live, done, onToggle }: { attraction: Attr
 
 function VenueCard({ venue, items, onToggle }: { venue: string; items: Meal[]; onToggle: (id: string) => void }) {
   const [open, setOpen] = useState(false);
+  const [, forceRerender] = useState(0);
   const doneCount = items.filter(m => db.isDone(m.id)).length;
   const avgTaste = items.reduce((s, m) => s + m.tasteRating, 0) / items.length;
+  const familyTotal = db.getFamily().length;
+  const interested = db.getVisitInterest(venue);
+  const me = db.getMe();
+  const iWantToVisit = !!me && interested.includes(me);
+
+  const toggleVisit = () => {
+    const name = ensureMe();
+    if (!name) return;
+    db.toggleVisitInterest(venue, name);
+    forceRerender(n => n + 1);
+  };
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
@@ -310,10 +323,21 @@ function VenueCard({ venue, items, onToggle }: { venue: string; items: Meal[]; o
           Ampliar menú <ChevronDown size={14} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
         </span>
       </button>
+      <div className="px-3.5 pb-3 -mt-1 flex items-center justify-between">
+        <button
+          onClick={toggleVisit}
+          className={`flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-lg border transition ${iWantToVisit ? 'bg-rose-500 text-white border-rose-500' : 'bg-white border-slate-200 text-slate-500'}`}
+        >
+          <Heart size={13} className={iWantToVisit ? 'fill-white' : ''} /> Quiero visitar
+        </button>
+        {interested.length > 0 && (
+          <span className="text-[11px] text-slate-400">{interested.length}/{familyTotal} Lorenzos quiere{interested.length !== 1 ? 'n' : ''}{interested.length > 0 && ` (${interested.join(', ')})`}</span>
+        )}
+      </div>
       {open && (
         <div className="px-3.5 pb-3.5 space-y-3 border-t border-slate-100 pt-3">
           {items.map(m => (
-            <MealCard key={m.id} meal={m} done={db.isDone(m.id)} onToggle={() => onToggle(m.id)} />
+            <MealCard key={m.id} meal={m} venue={venue} done={db.isDone(m.id)} onToggle={() => onToggle(m.id)} />
           ))}
         </div>
       )}
@@ -321,7 +345,31 @@ function VenueCard({ venue, items, onToggle }: { venue: string; items: Meal[]; o
   );
 }
 
-function MealCard({ meal, done, onToggle }: { meal: Meal; done: boolean; onToggle: () => void }) {
+function MealCard({ meal, venue, done, onToggle }: { meal: Meal; venue: string; done: boolean; onToggle: () => void }) {
+  const [myStatus, setMyStatus] = useState(() => db.getMyMealStatus(meal.id));
+
+  const toggleTried = () => {
+    const name = ensureMe();
+    if (!name) return;
+    const next: MyMealStatus = { ...myStatus, tried: !myStatus.tried };
+    setMyStatus(next);
+    db.setMyMealStatus(meal.id, next);
+    if (next.tried) {
+      db.addUpdate(name, `probó ${meal.name} en ${venue}`, next.rating);
+    }
+  };
+
+  const setMyRating = (rating: number) => {
+    const name = ensureMe();
+    if (!name) return;
+    const next: MyMealStatus = { tried: true, rating };
+    setMyStatus(next);
+    db.setMyMealStatus(meal.id, next);
+    if (rating > 0) {
+      db.addUpdate(name, `comió ${meal.name} en ${venue} y le dio ${rating}/5 estrellas`, rating);
+    }
+  };
+
   return (
     <div className={`bg-white rounded-xl border p-3.5 shadow-sm transition ${done ? 'border-emerald-300 bg-emerald-50/40' : 'border-slate-200'}`}>
       <div className="flex items-start justify-between gap-2">
@@ -331,6 +379,7 @@ function MealCard({ meal, done, onToggle }: { meal: Meal; done: boolean; onToggl
         </button>
       </div>
       <div className="flex items-center gap-3 mt-1">
+        <span className="text-[10px] text-slate-400">Redes:</span>
         <TasteStars value={meal.tasteRating} />
         <PhotogenicRating value={meal.photogenicRating} />
       </div>
@@ -347,6 +396,21 @@ function MealCard({ meal, done, onToggle }: { meal: Meal; done: boolean; onToggl
           ))}
         </div>
       )}
+      <div className="flex items-center justify-between mt-2.5 bg-brand-50/50 border border-brand-100 rounded-lg px-2.5 py-2">
+        <button
+          onClick={toggleTried}
+          className={`flex items-center gap-1.5 text-[11px] font-medium ${myStatus.tried ? 'text-emerald-600' : 'text-slate-500'}`}
+        >
+          <span className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${myStatus.tried ? 'bg-emerald-500 border-emerald-500' : 'border-slate-300'}`}>
+            {myStatus.tried && <Check size={10} className="text-white" />}
+          </span>
+          Lo probé
+        </button>
+        <div className="flex items-center gap-1">
+          <span className="text-[10px] text-slate-400 mr-0.5">Nosotros:</span>
+          <OurStars value={myStatus.rating || 0} onChange={setMyRating} size={14} />
+        </div>
+      </div>
       <ItemPhotos itemId={meal.id} />
       <CommentThread threadId={meal.id} />
     </div>

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { CalendarDays, MapPin, Music2, Utensils, Drama, Bell, CheckCircle2 } from 'lucide-react';
+import { CalendarDays, MapPin, Music2, Utensils, Drama, Bell, CheckCircle2, Star, Clock3 } from 'lucide-react';
 import { useCountdown, useNow, todayKey } from '../hooks/useCountdown';
 import { getTripDay, getNextParkDay, isBeforeTrip, isAfterTrip } from '../lib/tripDay';
 import { BIRTHDAYS, TRIP_DAYS, ATTRACTIONS, MEALS } from '../data/trip';
@@ -102,6 +102,8 @@ export default function Dashboard() {
         </div>
       </div>
 
+      <UpdatesFeed />
+
       {stickerOk && (
         <div className="flex justify-center pt-2">
           <img
@@ -113,6 +115,47 @@ export default function Dashboard() {
           />
         </div>
       )}
+    </div>
+  );
+}
+
+function timeAgo(iso: string): string {
+  const diffMin = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+  if (diffMin < 1) return 'ahora';
+  if (diffMin < 60) return `hace ${diffMin} min`;
+  const diffH = Math.round(diffMin / 60);
+  if (diffH < 24) return `hace ${diffH}h`;
+  return `hace ${Math.round(diffH / 24)}d`;
+}
+
+function UpdatesFeed() {
+  const updates = db.getUpdates().slice(0, 8);
+  if (updates.length === 0) return null;
+  return (
+    <div>
+      <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-2 px-1">Actividad reciente</p>
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm divide-y divide-slate-100">
+        {updates.map(u => (
+          <div key={u.id} className="p-3 flex items-start gap-2.5">
+            <div className="w-7 h-7 rounded-full bg-brand-100 text-brand-700 text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+              {u.who.slice(0, 1).toUpperCase()}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-slate-700"><span className="font-semibold">{u.who}</span> {u.text}</p>
+              <div className="flex items-center gap-2 mt-0.5">
+                {!!u.rating && (
+                  <span className="inline-flex items-center gap-0.5">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} size={10} className={i < u.rating! ? 'fill-amber-400 text-amber-400' : 'text-gray-300'} />
+                    ))}
+                  </span>
+                )}
+                <span className="text-[10px] text-slate-400 flex items-center gap-0.5"><Clock3 size={9} /> {timeAgo(u.createdAt)}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
