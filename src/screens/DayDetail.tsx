@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import BackButton from '../components/BackButton';
 import ItemPhotos from '../components/ItemPhotos';
@@ -147,18 +147,14 @@ export default function DayDetail() {
         attractionsByArea.map(([area, items]) => {
           const guide = guidesToday.find(g => g.name === area);
           return (
-            <section key={area}>
-              <div className="flex items-center gap-2 mb-2">
-                {guide && <span className="text-lg">{guide.emoji}</span>}
-                <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wide">{area}</h2>
-              </div>
+            <AreaSection key={area} area={area} emoji={guide?.emoji} defaultOpen={!!query}>
               {guide && <AreaGuideBox guide={guide.guide} bestFor={guide.bestFor} walkFrom={guide.walkFrom} />}
               <div className="space-y-3 mt-2">
                 {items.map(a => (
                   <AttractionCard key={a.id} attraction={a} live={liveRides ? matchLiveWait(liveRides, a.name) : null} done={db.isDone(a.id)} onToggle={() => toggleDone(a.id)} />
                 ))}
               </div>
-            </section>
+            </AreaSection>
           );
         })
       )}
@@ -166,14 +162,13 @@ export default function DayDetail() {
       {tab === 'comidas' && (
         mealsByArea.length === 0 ? <EmptyState query={query} /> :
         mealsByArea.map(([area, items]) => (
-          <section key={`meals-${area}`}>
-            <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wide mb-2">{area}</h2>
+          <AreaSection key={`meals-${area}`} area={area} defaultOpen={!!query}>
             <div className="space-y-2.5">
               {groupByVenue(items).map(([venue, venueItems]) => (
                 <VenueCard key={venue} venue={venue} items={venueItems} onToggle={toggleDone} />
               ))}
             </div>
-          </section>
+          </AreaSection>
         ))
       )}
 
@@ -200,12 +195,11 @@ export default function DayDetail() {
       {tab === 'personajes' && (
         charactersByArea.length === 0 ? <EmptyState query={query} /> :
         charactersByArea.map(([area, items]) => (
-          <section key={`chars-${area}`}>
-            <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wide mb-2">{area}</h2>
+          <AreaSection key={`chars-${area}`} area={area} defaultOpen={!!query}>
             <div className="space-y-2">
               {items.map(c => <CharacterCard key={c.id} character={c} />)}
             </div>
-          </section>
+          </AreaSection>
         ))
       )}
     </div>
@@ -217,6 +211,22 @@ function EmptyState({ query }: { query: string }) {
     <p className="text-center text-sm text-slate-400 py-10">
       {query ? `Nada coincide con "${query}"` : 'Nada por aquí todavía'}
     </p>
+  );
+}
+
+function AreaSection({ area, emoji, defaultOpen, children }: { area: string; emoji?: string; defaultOpen?: boolean; children: ReactNode }) {
+  const [open, setOpen] = useState(true);
+  useEffect(() => { if (defaultOpen) setOpen(true); }, [defaultOpen]);
+
+  return (
+    <section>
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center gap-2 mb-2 text-left">
+        {emoji && <span className="text-lg">{emoji}</span>}
+        <h2 className="flex-1 text-sm font-bold text-slate-700 uppercase tracking-wide">{area}</h2>
+        <ChevronDown size={16} className={`text-slate-400 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+      {open && children}
+    </section>
   );
 }
 
