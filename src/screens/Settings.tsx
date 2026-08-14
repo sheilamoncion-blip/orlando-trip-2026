@@ -14,8 +14,8 @@ export default function Settings() {
   const [confirmText, setConfirmText] = useState('');
   const fileInput = useRef<HTMLInputElement>(null);
 
-  const exportBackup = () => {
-    const json = db.exportAll();
+  const exportBackup = async () => {
+    const json = await db.exportAll();
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -29,9 +29,9 @@ export default function Settings() {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => {
+    reader.onload = async () => {
       try {
-        db.importAll(reader.result as string);
+        await db.importAll(reader.result as string);
         alert('Respaldo restaurado. Recargando...');
         window.location.reload();
       } catch {
@@ -102,8 +102,8 @@ export default function Settings() {
         />
         <button
           disabled={confirmText !== DELETE_PASSCODE}
-          onClick={() => {
-            localStorage.clear();
+          onClick={async () => {
+            await db.clearAll();
             window.location.reload();
           }}
           className="flex items-center gap-1.5 bg-rose-50 text-rose-600 px-3 py-2 rounded-lg text-xs font-medium disabled:opacity-40 disabled:cursor-not-allowed"

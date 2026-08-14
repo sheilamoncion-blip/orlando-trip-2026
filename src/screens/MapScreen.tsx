@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MapPin, ChevronDown, Image as ImageIcon, X, ZoomIn } from 'lucide-react';
 import { PARK_LABELS, PARK_COLORS, type ParkId } from '../types';
 import PhotoUploader from '../components/PhotoUploader';
@@ -26,18 +26,20 @@ function ParkMapCard({ parkId }: { parkId: ParkId }) {
   const [open, setOpen] = useState(false);
   const [zoomed, setZoomed] = useState(false);
   const [staticOk, setStaticOk] = useState(true);
-  const [mapUrl, setMapUrl] = useState<string | null>(() => db.getParkMap(parkId));
+  const [mapUrl, setMapUrl] = useState<string | null>(null);
+
+  useEffect(() => { db.getParkMap(parkId).then(setMapUrl); }, [parkId]);
 
   const hasMap = staticOk || !!mapUrl;
   const activeSrc = staticOk ? staticSrc : mapUrl;
 
-  const upload = (dataUrl: string) => {
+  const upload = async (dataUrl: string) => {
     try {
-      db.setParkMap(parkId, dataUrl);
+      await db.setParkMap(parkId, dataUrl);
       setMapUrl(dataUrl);
       setOpen(true);
     } catch {
-      alert('Esa imagen es demasiado pesada para subirla desde la app. Pídele a Sheila que la coloque directo en el proyecto (public/maps/).');
+      alert('No se pudo guardar el mapa. Intenta de nuevo — si sigue fallando, avísale a Sheila.');
     }
   };
 

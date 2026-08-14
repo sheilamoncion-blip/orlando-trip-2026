@@ -92,7 +92,7 @@ export const NATURE_ATTRACTIONS: Attraction[] = [
 export const NATURE_MEALS: Meal[] = [
   {
     id: 'ep-sunshine-seasons', park: 'epcot', area: 'World Nature', day: DAY,
-    name: 'Sunshine Seasons (The Land)', priceRange: '$12-18', tasteRating: 4, photogenicRating: 3, typicalWaitMin: 15,
+    name: 'Sunshine Seasons (The Land) (Estaciones de comida variada)', priceRange: '$12-18', tasteRating: 4, photogenicRating: 3, typicalWaitMin: 15,
     recommended: ['Estaciones variadas: asiático, parrilla, panadería'], addOns: [],
     photoTip: 'Buena opción rápida y variada para grupo grande con gustos distintos.',
   },

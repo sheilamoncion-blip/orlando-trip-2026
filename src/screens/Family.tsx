@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import BackButton from '../components/BackButton';
 import PhotoUploader from '../components/PhotoUploader';
 import { Plus, X, MapPinned, Phone, Cake as CakeIcon, Users, Pencil, UserPlus, Trash2 } from 'lucide-react';
@@ -28,7 +28,8 @@ const emptyForm: FormState = { name: '', age: '', phone: '', avatar: '' };
 
 export default function Family() {
   const [groups, setGroups] = useState<FamilyGroup[]>(() => db.getFamilyGroups());
-  const [members, setMembers] = useState<FamilyMember[]>(() => db.getFamilyMembers());
+  const [members, setMembers] = useState<FamilyMember[]>([]);
+  useEffect(() => { db.getFamilyMembers().then(setMembers); }, []);
   const [selected, setSelected] = useState<FamilyMember | null>(null);
   const [editing, setEditing] = useState(false);
   const [showAddGroup, setShowAddGroup] = useState(false);
@@ -58,7 +59,7 @@ export default function Family() {
     setForm(emptyForm);
   };
 
-  const addMember = () => {
+  const addMember = async () => {
     if (!form.name.trim() || !addingToGroup) return;
     const member: FamilyMember = {
       id: crypto.randomUUID(), name: form.name.trim(), age: form.age ? Number(form.age) : undefined,
@@ -66,12 +67,12 @@ export default function Family() {
     };
     const updated = [...members, member];
     try {
-      db.saveFamilyMembers(updated);
+      await db.saveFamilyMembers(updated);
       setMembers(updated);
       setForm(emptyForm);
       setAddingToGroup(null);
     } catch {
-      alert('No se pudo guardar — el navegador se quedó sin espacio. Intenta con un avatar más liviano.');
+      alert('No se pudo guardar. Intenta de nuevo — si sigue fallando, avísale a Sheila.');
     }
   };
 
@@ -80,7 +81,7 @@ export default function Family() {
     setEditing(true);
   };
 
-  const saveEdit = () => {
+  const saveEdit = async () => {
     if (!selected || !form.name.trim()) return;
     const updatedMember: FamilyMember = {
       ...selected, name: form.name.trim(), age: form.age ? Number(form.age) : undefined,
@@ -88,24 +89,24 @@ export default function Family() {
     };
     const updated = members.map(m => m.id === selected.id ? updatedMember : m);
     try {
-      db.saveFamilyMembers(updated);
+      await db.saveFamilyMembers(updated);
       setMembers(updated);
       setSelected(updatedMember);
       setEditing(false);
     } catch {
-      alert('No se pudo guardar — el navegador se quedó sin espacio. Intenta con un avatar más liviano.');
+      alert('No se pudo guardar. Intenta de nuevo — si sigue fallando, avísale a Sheila.');
     }
   };
 
-  const removeMember = (id: string) => {
+  const removeMember = async (id: string) => {
     const updated = members.filter(m => m.id !== id);
     setMembers(updated);
-    db.saveFamilyMembers(updated);
+    await db.saveFamilyMembers(updated);
     setSelected(null);
     setEditing(false);
   };
 
-  const removeGroup = (group: FamilyGroup) => {
+  const removeGroup = async (group: FamilyGroup) => {
     const groupMembers = membersByGroup.get(group.label) || [];
     const msg = groupMembers.length > 0
       ? `Esto eliminará "${group.label}" y a sus ${groupMembers.length} integrante${groupMembers.length !== 1 ? 's' : ''}. ¿Continuar?`
@@ -116,7 +117,7 @@ export default function Family() {
     setGroups(updatedGroups);
     setMembers(updatedMembers);
     db.saveFamilyGroups(updatedGroups);
-    db.saveFamilyMembers(updatedMembers);
+    await db.saveFamilyMembers(updatedMembers);
   };
 
   const closeModal = () => { setSelected(null); setEditing(false); };

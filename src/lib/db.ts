@@ -1,4 +1,9 @@
 import type { Comment, PhotoBoardItem, FamilyMember, FamilyGroup, ActivityUpdate } from '../types';
+import { idbGet, idbSet, idbGetAllEntries, idbClearAll } from './idb';
+
+// Claves cuyo contenido (fotos/avatares en base64) es demasiado pesado para localStorage
+// (~5-10MB de cuota) — se guardan en IndexedDB en su lugar, que soporta cientos de MB.
+const MEDIA_KEYS = ['otp_family_members', 'otp_photoboard', 'otp_item_photos', 'otp_park_maps'] as const;
 
 function load<T>(key: string, fallback: T): T {
   try {
@@ -78,34 +83,30 @@ export const db = {
     save('otp_tiktok', all);
   },
 
-  // Family members — grouped by family unit, with avatar/age/phone
-  getFamilyMembers: (): FamilyMember[] => load('otp_family_members', []),
-  saveFamilyMembers: (members: FamilyMember[]) => save('otp_family_members', members),
+  // Family members — grouped by family unit, con avatar/edad/teléfono. Viven en IndexedDB
+  // (los avatares en base64 son pesados); se mantiene un cache liviano de solo nombres en
+  // localStorage (ver getFamily) para que los selectores de "¿quién?" sigan siendo síncronos.
+  getFamilyMembers: (): Promise<FamilyMember[]> => idbGet('otp_family_members', []),
+  saveFamilyMembers: async (members: FamilyMember[]) => {
+    await idbSet('otp_family_members', members);
+    save('otp_family_names_cache', members.map(m => m.name));
+  },
 
   // Family groups (ej: "Familia Lorenzo Moncion") — contenedores donde se agregan integrantes.
-  // Si no hay grupos guardados pero ya existen miembros con groupLabel (datos viejos), se migran una sola vez.
-  getFamilyGroups: (): FamilyGroup[] => {
-    const groups = load<FamilyGroup[]>('otp_family_groups', []);
-    if (groups.length > 0) return groups;
-    const members = load<FamilyMember[]>('otp_family_members', []);
-    const labels = Array.from(new Set(members.map(m => m.groupLabel).filter(Boolean)));
-    if (labels.length === 0) return [];
-    const migrated = labels.map(label => ({ id: crypto.randomUUID(), label }));
-    save('otp_family_groups', migrated);
-    return migrated;
-  },
+  getFamilyGroups: (): FamilyGroup[] => load<FamilyGroup[]>('otp_family_groups', []),
   saveFamilyGroups: (groups: FamilyGroup[]) => save('otp_family_groups', groups),
 
-  // Simple name list — used by assignee dropdowns (Epcot challenge, TikTok/Instagram ideas)
+  // Simple name list — used by assignee dropdowns (Epcot challenge, TikTok/Instagram ideas).
+  // Síncrono a propósito: lee de un cache pequeño en localStorage, actualizado por saveFamilyMembers.
   getFamily: (): string[] => {
-    const members = load<FamilyMember[]>('otp_family_members', []);
-    if (members.length > 0) return members.map(m => m.name);
+    const cached = load<string[]>('otp_family_names_cache', []);
+    if (cached.length > 0) return cached;
     return load('otp_family', ['Sheila', 'Carlos Manuel']);
   },
 
   // Photo inspiration board
-  getPhotoBoard: (): PhotoBoardItem[] => load('otp_photoboard', []),
-  savePhotoBoard: (items: PhotoBoardItem[]) => save('otp_photoboard', items),
+  getPhotoBoard: (): Promise<PhotoBoardItem[]> => idbGet('otp_photoboard', []),
+  savePhotoBoard: (items: PhotoBoardItem[]) => idbSet('otp_photoboard', items),
 
   // Personalization shop orders
   isOrdered: (itemId: string): boolean => load<Record<string, boolean>>('otp_ordered', {})[itemId] || false,
@@ -158,24 +159,24 @@ export const db = {
   },
 
   // Family photos attached to a specific attraction/meal/character/show (itemId -> dataUrls[])
-  getItemPhotos: (itemId: string): string[] => load<Record<string, string[]>>('otp_item_photos', {})[itemId] || [],
-  addItemPhoto: (itemId: string, dataUrl: string) => {
-    const all = load<Record<string, string[]>>('otp_item_photos', {});
+  getItemPhotos: async (itemId: string): Promise<string[]> => (await idbGet<Record<string, string[]>>('otp_item_photos', {}))[itemId] || [],
+  addItemPhoto: async (itemId: string, dataUrl: string) => {
+    const all = await idbGet<Record<string, string[]>>('otp_item_photos', {});
     all[itemId] = [...(all[itemId] || []), dataUrl];
-    save('otp_item_photos', all);
+    await idbSet('otp_item_photos', all);
   },
-  removeItemPhoto: (itemId: string, index: number) => {
-    const all = load<Record<string, string[]>>('otp_item_photos', {});
+  removeItemPhoto: async (itemId: string, index: number) => {
+    const all = await idbGet<Record<string, string[]>>('otp_item_photos', {});
     all[itemId] = (all[itemId] || []).filter((_, i) => i !== index);
-    save('otp_item_photos', all);
+    await idbSet('otp_item_photos', all);
   },
 
   // Uploaded park map images (parkId -> dataUrl)
-  getParkMap: (parkId: string): string | null => load<Record<string, string>>('otp_park_maps', {})[parkId] || null,
-  setParkMap: (parkId: string, dataUrl: string) => {
-    const all = load<Record<string, string>>('otp_park_maps', {});
+  getParkMap: async (parkId: string): Promise<string | null> => (await idbGet<Record<string, string>>('otp_park_maps', {}))[parkId] || null,
+  setParkMap: async (parkId: string, dataUrl: string) => {
+    const all = await idbGet<Record<string, string>>('otp_park_maps', {});
     all[parkId] = dataUrl;
-    save('otp_park_maps', all);
+    await idbSet('otp_park_maps', all);
   },
 
   // Group status text (since live GPS sharing needs a backend — see README)
@@ -220,8 +221,8 @@ export const db = {
     return update;
   },
 
-  // Respaldo/restauración — todas las claves otp_* como un solo JSON descargable
-  exportAll: (): string => {
+  // Respaldo/restauración — todas las claves otp_* (localStorage + fotos en IndexedDB) en un solo JSON descargable
+  exportAll: async (): Promise<string> => {
     const backup: Record<string, unknown> = {};
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
@@ -229,13 +230,29 @@ export const db = {
         try { backup[key] = JSON.parse(localStorage.getItem(key)!); } catch { /* skip corrupt entry */ }
       }
     }
+    const mediaEntries = await idbGetAllEntries();
+    Object.assign(backup, mediaEntries);
     return JSON.stringify({ exportedAt: new Date().toISOString(), data: backup });
   },
-  importAll: (json: string) => {
+  importAll: async (json: string) => {
     const parsed = JSON.parse(json);
     const data = parsed.data || parsed; // acepta también un respaldo "plano" sin envoltura
-    Object.entries(data).forEach(([key, value]) => {
-      if (key.startsWith('otp_')) localStorage.setItem(key, JSON.stringify(value));
-    });
+    for (const [key, value] of Object.entries(data)) {
+      if (!key.startsWith('otp_')) continue;
+      if ((MEDIA_KEYS as readonly string[]).includes(key)) {
+        await idbSet(key, value);
+      } else {
+        localStorage.setItem(key, JSON.stringify(value));
+      }
+    }
+  },
+
+  // Borra tanto localStorage (otp_*) como los datos en IndexedDB — usado por "Borrar todos los datos"
+  clearAll: async () => {
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+      const key = localStorage.key(i);
+      if (key) localStorage.removeItem(key);
+    }
+    await idbClearAll();
   },
 };

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import BackButton from '../components/BackButton';
 import { Trash2, Search, X } from 'lucide-react';
 import PhotoUploader from '../components/PhotoUploader';
@@ -10,7 +10,8 @@ import { PARK_LABELS } from '../types';
 const PARK_OPTIONS: (ParkId | 'any')[] = ['any', 'universal', 'islands', 'epic', 'magic-kingdom', 'epcot'];
 
 export default function PhotoBoard() {
-  const [items, setItems] = useState<PhotoBoardItem[]>(() => db.getPhotoBoard());
+  const [items, setItems] = useState<PhotoBoardItem[]>([]);
+  useEffect(() => { db.getPhotoBoard().then(setItems); }, []);
   const [query, setQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<'all' | 'reference' | 'ours'>('all');
   const [parkFilter, setParkFilter] = useState<ParkId | 'any' | 'all'>('all');
@@ -31,23 +32,23 @@ export default function PhotoBoard() {
       const resized = await resizeImage(dataUrl);
       const item: PhotoBoardItem = { id: crypto.randomUUID(), type, park: 'any', dataUrl: resized, filename, uploadedBy: currentUploader(), createdAt: new Date().toISOString() };
       const updated = [item, ...items];
-      db.savePhotoBoard(updated);
+      await db.savePhotoBoard(updated);
       setItems(updated);
     } catch {
-      alert('No se pudo guardar la foto — el navegador se quedó sin espacio de almacenamiento. Borra alguna foto vieja e intenta de nuevo.');
+      alert('No se pudo guardar la foto. Intenta de nuevo — si sigue fallando, avísale a Sheila.');
     }
   };
 
-  const updateItem = (id: string, patch: Partial<PhotoBoardItem>) => {
+  const updateItem = async (id: string, patch: Partial<PhotoBoardItem>) => {
     const updated = items.map(i => i.id === id ? { ...i, ...patch } : i);
     setItems(updated);
-    db.savePhotoBoard(updated);
+    await db.savePhotoBoard(updated);
   };
 
-  const remove = (id: string) => {
+  const remove = async (id: string) => {
     const updated = items.filter(i => i.id !== id);
     setItems(updated);
-    db.savePhotoBoard(updated);
+    await db.savePhotoBoard(updated);
   };
 
   const filtered = items.filter(i => {
