@@ -226,6 +226,33 @@ export const MINION_MEALS: Meal[] = [
     addOns: [], dietary: 'Contiene alcohol — 21+',
   },
 
+  // ───── Bake My Day — panadería/tienda de regalos. Universal no publica precios exactos por
+  // ítem (no está en su sistema de mobile order); precios estimados a partir de reseñas públicas. ─────
+  { id: 'us-bake-my-day-cupcakes', park: 'universal', area: 'Minion Land', day: DAY, venue: 'Bake My Day',
+    name: 'Minion & Unicorn Cupcakes', priceRange: '~$7-9 (estimado)', tasteRating: 4, photogenicRating: 5, typicalWaitMin: 10,
+    recommended: ['Cupcakes decorados con tema de Minions y unicornios'], addOns: [], photoTip: 'Los diseños decorados son muy fotogénicos — buen contenido para redes.', dietary: 'Vegetariano — contiene gluten, lácteos, huevo' },
+  { id: 'us-bake-my-day-macarons', park: 'universal', area: 'Minion Land', day: DAY, venue: 'Bake My Day',
+    name: 'Macarons', priceRange: '~$5-7 (estimado)', tasteRating: 4, photogenicRating: 5, typicalWaitMin: 10,
+    recommended: ['Macarons de varios sabores y colores'], addOns: [], dietary: 'Vegetariano — contiene lácteos, huevo, nueces de árbol' },
+  { id: 'us-bake-my-day-smores', park: 'universal', area: 'Minion Land', day: DAY, venue: 'Bake My Day',
+    name: "S'mores", priceRange: '~$8-10 (estimado)', tasteRating: 4, photogenicRating: 4, typicalWaitMin: 10,
+    recommended: ['S\'mores temáticos de Minions'], addOns: [], dietary: 'Vegetariano — contiene gluten, lácteos' },
+  { id: 'us-bake-my-day-swiss-roll', park: 'universal', area: 'Minion Land', day: DAY, venue: 'Bake My Day',
+    name: 'Banana Swiss Roll', priceRange: '~$8-10 (estimado)', tasteRating: 4, photogenicRating: 4, typicalWaitMin: 10,
+    recommended: ['Rollo suizo de plátano'], addOns: [], dietary: 'Vegetariano — contiene gluten, lácteos, huevo' },
+  { id: 'us-bake-my-day-cake-pops', park: 'universal', area: 'Minion Land', day: DAY, venue: 'Bake My Day',
+    name: 'Cake Pops', priceRange: '~$5-7 (estimado)', tasteRating: 4, photogenicRating: 4, typicalWaitMin: 10,
+    recommended: ['Cake pops decorados con tema de Minions'], addOns: [], dietary: 'Vegetariano — contiene gluten, lácteos, huevo' },
+  { id: 'us-bake-my-day-whoopie-pies', park: 'universal', area: 'Minion Land', day: DAY, venue: 'Bake My Day',
+    name: 'Mini Whoopie Pies', priceRange: '~$5-7 (estimado)', tasteRating: 4, photogenicRating: 3, typicalWaitMin: 10,
+    recommended: ['Mini whoopie pies'], addOns: [], dietary: 'Vegetariano — contiene gluten, lácteos, huevo' },
+  { id: 'us-bake-my-day-cookies', park: 'universal', area: 'Minion Land', day: DAY, venue: 'Bake My Day',
+    name: 'Cookies', priceRange: '~$4-6 (estimado)', tasteRating: 4, photogenicRating: 3, typicalWaitMin: 10,
+    recommended: ['Galletas decoradas con tema de Minions'], addOns: [], dietary: 'Vegetariano — contiene gluten, lácteos, huevo' },
+  { id: 'us-bake-my-day-minion-apple', park: 'universal', area: 'Minion Land', day: DAY, venue: 'Bake My Day',
+    name: 'Minion Candy Apple', priceRange: '~$10-13 (estimado)', tasteRating: 4, photogenicRating: 5, typicalWaitMin: 10,
+    recommended: ['Manzana acaramelada decorada como Minion'], addOns: [], photoTip: 'Uno de los ítems más fotogénicos de todo Minion Land.', dietary: 'Vegano — contiene trazas de nuez según decoración' },
+
   // ───── Richter's Burger Co. — menú completo ─────
   { id: 'us-richters-triple-smash', park: 'universal', area: 'Minion Land', day: DAY, venue: "Richter's Burger Co.",
     name: 'Triple Smash Burger (Triple hamburguesa smash)', priceRange: '$22.49 (plato) / $26.99 (combo)', tasteRating: 5, photogenicRating: 4, typicalWaitMin: 15,
