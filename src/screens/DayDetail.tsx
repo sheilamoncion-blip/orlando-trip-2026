@@ -237,8 +237,32 @@ function AreaGuideBox({ guide, bestFor, walkFrom }: { guide: string; bestFor: st
 function AttractionCard({ attraction, live, done, onToggle }: { attraction: Attraction; live: LiveRideStatus | null; done: boolean; onToggle: () => void }) {
   const [note, setNote] = useState(() => db.getNote(attraction.id));
   const [showGuide, setShowGuide] = useState(false);
+  const [planned, setPlanned] = useState(() => db.getPlannedTime(attraction.id));
+  const [confirmed, setConfirmed] = useState(() => db.getConfirmedTime(attraction.id));
   const waitToShow = live?.waitMinutes ?? db.getManualWait(attraction.id) ?? attraction.typicalWaitMin;
   const isLive = live?.waitMinutes != null;
+
+  const pickTime = (time: string) => {
+    if (confirmed === time) {
+      // segundo clic sobre la hora ya confirmada: deshacer
+      db.setConfirmedTime(attraction.id, null);
+      setConfirmed(null);
+      if (done) onToggle();
+      return;
+    }
+    if (planned === time) {
+      // segundo clic: confirmar que se hizo a esta hora
+      db.setConfirmedTime(attraction.id, time);
+      setConfirmed(time);
+      db.setPlannedTime(attraction.id, null);
+      setPlanned(null);
+      if (!done) onToggle();
+      return;
+    }
+    // primer clic: planificar esta hora
+    db.setPlannedTime(attraction.id, time);
+    setPlanned(time);
+  };
 
   return (
     <div className={`bg-white rounded-xl border p-3.5 shadow-sm transition ${done ? 'border-emerald-300 bg-emerald-50/40' : 'border-slate-200'}`}>
@@ -258,14 +282,36 @@ function AttractionCard({ attraction, live, done, onToggle }: { attraction: Attr
       </div>
       {attraction.bestTime && <p className="text-xs text-emerald-700 mt-1.5">🕐 Mejor hora: {attraction.bestTime}</p>}
       {attraction.hourlyWait && attraction.hourlyWait.length > 0 && (
-        <div className="flex gap-1.5 overflow-x-auto mt-2 pb-1">
-          {attraction.hourlyWait.map(h => (
-            <div key={h.time} className="shrink-0 bg-slate-50 border border-slate-100 rounded-lg px-2 py-1 text-center">
-              <p className="text-[9px] text-slate-400">{h.time}</p>
-              <p className="text-[11px] font-semibold text-slate-700">{h.minMin}-{h.maxMin}m</p>
-            </div>
-          ))}
-        </div>
+        <>
+          <div className="flex gap-1.5 overflow-x-auto mt-2 pb-1">
+            {attraction.hourlyWait.map(h => {
+              const isConfirmed = confirmed === h.time;
+              const isPlanned = planned === h.time;
+              return (
+                <button
+                  key={h.time}
+                  onClick={() => pickTime(h.time)}
+                  className={`shrink-0 rounded-lg px-2 py-1 text-center border transition ${
+                    isConfirmed ? 'bg-emerald-500 border-emerald-500' :
+                    isPlanned ? 'bg-brand-50 border-brand-400 ring-2 ring-brand-200' :
+                    'bg-slate-50 border-slate-100'
+                  }`}
+                >
+                  <p className={`text-[9px] flex items-center justify-center gap-0.5 ${isConfirmed ? 'text-white' : 'text-slate-400'}`}>
+                    {isConfirmed && <Check size={8} />} {h.time}
+                  </p>
+                  <p className={`text-[11px] font-semibold ${isConfirmed ? 'text-white' : 'text-slate-700'}`}>{h.minMin}-{h.maxMin}m</p>
+                </button>
+              );
+            })}
+          </div>
+          {planned && !confirmed && (
+            <p className="text-[11px] text-brand-600 mt-1">📅 Planeado para las {planned} — toca de nuevo esa hora cuando lo hagas para confirmar.</p>
+          )}
+          {confirmed && (
+            <p className="text-[11px] text-emerald-600 mt-1">✅ Confirmado — lo hiciste a las {confirmed}.</p>
+          )}
+        </>
       )}
       <p className="text-xs text-slate-500 mt-2 italic">📸 {attraction.photoTip}</p>
       {attraction.referenceLinks.length > 0 && (

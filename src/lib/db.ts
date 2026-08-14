@@ -128,6 +128,21 @@ export const db = {
     if (!all.includes(id)) { all.push(id); save('otp_fired_alarms', all); }
   },
 
+  // Planificación de horario por atracción: primer clic en un chip de hora = "planeado",
+  // segundo clic en el mismo chip = "confirmado" (ya lo hicimos a esa hora)
+  getPlannedTime: (itemId: string): string | null => load<Record<string, string>>('otp_planned_time', {})[itemId] || null,
+  setPlannedTime: (itemId: string, time: string | null) => {
+    const all = load<Record<string, string>>('otp_planned_time', {});
+    if (time) all[itemId] = time; else delete all[itemId];
+    save('otp_planned_time', all);
+  },
+  getConfirmedTime: (itemId: string): string | null => load<Record<string, string>>('otp_confirmed_time', {})[itemId] || null,
+  setConfirmedTime: (itemId: string, time: string | null) => {
+    const all = load<Record<string, string>>('otp_confirmed_time', {});
+    if (time) all[itemId] = time; else delete all[itemId];
+    save('otp_confirmed_time', all);
+  },
+
   // Family photos attached to a specific attraction/meal/character/show (itemId -> dataUrls[])
   getItemPhotos: (itemId: string): string[] => load<Record<string, string[]>>('otp_item_photos', {})[itemId] || [],
   addItemPhoto: (itemId: string, dataUrl: string) => {
