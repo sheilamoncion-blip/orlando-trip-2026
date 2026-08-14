@@ -6,6 +6,7 @@ import Dashboard from './screens/Dashboard';
 import ItineraryList from './screens/ItineraryList';
 import DayDetail from './screens/DayDetail';
 import EpcotChallenge from './screens/EpcotChallenge';
+import FoodGuide from './screens/FoodGuide';
 import MapScreen from './screens/MapScreen';
 import Notifications from './screens/Notifications';
 import MoreHub from './screens/MoreHub';
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="/itinerario" element={<ItineraryList />} />
           <Route path="/itinerario/:date" element={<DayDetail />} />
           <Route path="/epcot" element={<EpcotChallenge />} />
+          <Route path="/comida" element={<FoodGuide />} />
           <Route path="/mapa" element={<MapScreen />} />
           <Route path="/alertas" element={<Notifications />} />
           <Route path="/mas" element={<MoreHub />} />

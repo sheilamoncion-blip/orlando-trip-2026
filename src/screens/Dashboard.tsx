@@ -12,7 +12,7 @@ const QUICK_NAV = [
   { to: '/itinerario', icon: CalendarDays, label: 'Itinerario' },
   { to: '/mapa', icon: MapPin, label: 'Mapa' },
   { to: '/tiktok', icon: Music2, label: 'TikTok' },
-  { to: '/epcot', icon: Utensils, label: 'Comida' },
+  { to: '/comida', icon: Utensils, label: 'Comida' },
   { to: '/shows', icon: Drama, label: 'Shows' },
   { to: '/alertas', icon: Bell, label: 'Alertas' },
 ];
