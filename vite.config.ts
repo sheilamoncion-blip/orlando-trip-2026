@@ -31,8 +31,8 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern: /\.(png|jpg|jpeg)$/,
-            handler: 'CacheFirst',
-            options: { cacheName: 'images-cache', expiration: { maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 30 } },
+            handler: 'NetworkFirst',
+            options: { cacheName: 'images-cache-v2', networkTimeoutSeconds: 4, expiration: { maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 7 } },
           },
           {
             urlPattern: /^https:\/\/api\.themeparks\.wiki\/.*/,
