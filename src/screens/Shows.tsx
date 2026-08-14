@@ -4,6 +4,7 @@ import { Sun, Home, Search, X } from 'lucide-react';
 import { SHOWS } from '../data/trip';
 import { PARK_LABELS, PARK_COLORS } from '../types';
 import CommentThread from '../components/CommentThread';
+import ItemPhotos from '../components/ItemPhotos';
 
 export default function Shows() {
   const [query, setQuery] = useState('');
@@ -49,6 +50,7 @@ export default function Shows() {
                 <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
                   {s.indoor ? <Home size={11} /> : <Sun size={11} />} {s.location} · {s.indoor ? 'Bajo techo' : 'Al aire libre'}
                 </p>
+                <ItemPhotos itemId={s.id} />
                 <CommentThread threadId={s.id} />
               </div>
             ))}

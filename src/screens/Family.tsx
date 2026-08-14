@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import BackButton from '../components/BackButton';
 import PhotoUploader from '../components/PhotoUploader';
-import { Plus, X, MapPinned, Phone, Cake as CakeIcon, Users } from 'lucide-react';
+import { Plus, X, MapPinned, Phone, Cake as CakeIcon, Users, Pencil } from 'lucide-react';
 import { db } from '../lib/db';
 import type { FamilyMember } from '../types';
 
@@ -17,15 +17,27 @@ function initials(name: string): string {
   return name.trim().split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase()).join('');
 }
 
+function Avatar({ member, size = 'md' }: { member: FamilyMember; size?: 'md' | 'lg' }) {
+  const dims = size === 'lg' ? 'w-20 h-28' : 'w-16 h-20';
+  if (member.avatar) {
+    return <img src={member.avatar} className={`${dims} object-contain rounded-xl bg-slate-50 border border-slate-100`} />;
+  }
+  return (
+    <div className={`${dims} rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center font-bold border border-slate-100 ${size === 'lg' ? 'text-2xl' : 'text-base'}`}>
+      {initials(member.name)}
+    </div>
+  );
+}
+
+interface FormState { name: string; age: string; phone: string; groupLabel: string; avatar: string }
+const emptyForm: FormState = { name: '', age: '', phone: '', groupLabel: '', avatar: '' };
+
 export default function Family() {
   const [members, setMembers] = useState<FamilyMember[]>(() => db.getFamilyMembers());
   const [selected, setSelected] = useState<FamilyMember | null>(null);
+  const [editing, setEditing] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [name, setName] = useState('');
-  const [age, setAge] = useState('');
-  const [phone, setPhone] = useState('');
-  const [groupLabel, setGroupLabel] = useState('');
-  const [avatar, setAvatar] = useState('');
+  const [form, setForm] = useState<FormState>(emptyForm);
   const [groupStatus, setGroupStatus] = useState(() => db.getGroupStatus());
   const [myStatus, setMyStatus] = useState('');
 
@@ -33,15 +45,34 @@ export default function Family() {
   const grouped = useMemo(() => groupByLabel(members), [members]);
 
   const addMember = () => {
-    if (!name.trim() || !groupLabel.trim()) return;
+    if (!form.name.trim() || !form.groupLabel.trim()) return;
     const member: FamilyMember = {
-      id: crypto.randomUUID(), name: name.trim(), age: age ? Number(age) : undefined,
-      phone: phone.trim() || undefined, avatar: avatar || undefined, groupLabel: groupLabel.trim(),
+      id: crypto.randomUUID(), name: form.name.trim(), age: form.age ? Number(form.age) : undefined,
+      phone: form.phone.trim() || undefined, avatar: form.avatar || undefined, groupLabel: form.groupLabel.trim(),
     };
     const updated = [...members, member];
     setMembers(updated);
     db.saveFamilyMembers(updated);
-    setName(''); setAge(''); setPhone(''); setGroupLabel(''); setAvatar(''); setShowForm(false);
+    setForm(emptyForm);
+    setShowForm(false);
+  };
+
+  const startEdit = (m: FamilyMember) => {
+    setForm({ name: m.name, age: m.age ? String(m.age) : '', phone: m.phone || '', groupLabel: m.groupLabel, avatar: m.avatar || '' });
+    setEditing(true);
+  };
+
+  const saveEdit = () => {
+    if (!selected || !form.name.trim() || !form.groupLabel.trim()) return;
+    const updatedMember: FamilyMember = {
+      ...selected, name: form.name.trim(), age: form.age ? Number(form.age) : undefined,
+      phone: form.phone.trim() || undefined, avatar: form.avatar || undefined, groupLabel: form.groupLabel.trim(),
+    };
+    const updated = members.map(m => m.id === selected.id ? updatedMember : m);
+    setMembers(updated);
+    db.saveFamilyMembers(updated);
+    setSelected(updatedMember);
+    setEditing(false);
   };
 
   const removeMember = (id: string) => {
@@ -49,7 +80,10 @@ export default function Family() {
     setMembers(updated);
     db.saveFamilyMembers(updated);
     setSelected(null);
+    setEditing(false);
   };
+
+  const closeModal = () => { setSelected(null); setEditing(false); };
 
   const shareStatus = () => {
     const me = localStorage.getItem('otp_me') || 'Alguien';
@@ -69,7 +103,7 @@ export default function Family() {
           <h1 className="text-xl font-extrabold text-slate-800">Familia</h1>
           <p className="text-sm text-slate-500">{members.length} en la lista</p>
         </div>
-        <button onClick={() => setShowForm(!showForm)} className="flex items-center gap-1 bg-brand-600 text-white text-xs font-medium px-3 py-2 rounded-lg">
+        <button onClick={() => { setForm(emptyForm); setShowForm(!showForm); }} className="flex items-center gap-1 bg-brand-600 text-white text-xs font-medium px-3 py-2 rounded-lg">
           <Plus size={14} /> Agregar
         </button>
       </header>
@@ -77,19 +111,19 @@ export default function Family() {
       {showForm && (
         <div className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-sm space-y-2">
           <div className="flex items-center gap-3">
-            {avatar ? <img src={avatar} className="w-14 h-14 rounded-full object-cover border border-slate-200" /> : (
-              <div className="w-14 h-14 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center text-lg font-bold shrink-0">{name ? initials(name) : '?'}</div>
+            {form.avatar ? <img src={form.avatar} className="w-16 h-20 object-contain rounded-xl bg-slate-50 border border-slate-100" /> : (
+              <div className="w-16 h-20 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg font-bold shrink-0">{form.name ? initials(form.name) : '?'}</div>
             )}
-            <PhotoUploader onUpload={setAvatar} label="Subir avatar" />
+            <PhotoUploader onUpload={a => setForm(f => ({ ...f, avatar: a }))} label="Subir avatar" />
           </div>
-          <input value={name} onChange={e => setName(e.target.value)} placeholder="Nombre y apellido" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300" />
+          <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Nombre y apellido" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300" />
           <div className="grid grid-cols-2 gap-2">
-            <input value={age} onChange={e => setAge(e.target.value)} type="number" placeholder="Edad" className="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300" />
-            <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="Teléfono" className="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300" />
+            <input value={form.age} onChange={e => setForm(f => ({ ...f, age: e.target.value }))} type="number" placeholder="Edad" className="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300" />
+            <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="Teléfono" className="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300" />
           </div>
           <input
-            value={groupLabel}
-            onChange={e => setGroupLabel(e.target.value)}
+            value={form.groupLabel}
+            onChange={e => setForm(f => ({ ...f, groupLabel: e.target.value }))}
             list="group-options"
             placeholder="Grupo (ej: Mamá y yo, Mi prima con su esposo e hijas)"
             className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300"
@@ -113,12 +147,8 @@ export default function Family() {
           <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1.5"><Users size={12} /> {label}</h2>
           <div className="flex flex-wrap gap-3">
             {groupMembers.map(m => (
-              <button key={m.id} onClick={() => setSelected(m)} className="flex flex-col items-center gap-1 w-16">
-                {m.avatar ? (
-                  <img src={m.avatar} className="w-14 h-14 rounded-full object-cover border-2 border-white shadow" />
-                ) : (
-                  <div className="w-14 h-14 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center text-base font-bold border-2 border-white shadow">{initials(m.name)}</div>
-                )}
+              <button key={m.id} onClick={() => setSelected(m)} className="flex flex-col items-center gap-1 w-20">
+                <Avatar member={m} />
                 <span className="text-[10px] text-slate-600 text-center leading-tight line-clamp-2">{m.name}</span>
               </button>
             ))}
@@ -149,22 +179,21 @@ export default function Family() {
         </div>
       </section>
 
-      {selected && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-4" onClick={() => setSelected(null)}>
+      {selected && !editing && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-4" onClick={closeModal}>
           <div className="bg-white rounded-2xl max-w-sm w-full p-5 space-y-3" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                {selected.avatar ? (
-                  <img src={selected.avatar} className="w-16 h-16 rounded-full object-cover border border-slate-200" />
-                ) : (
-                  <div className="w-16 h-16 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center text-xl font-bold">{initials(selected.name)}</div>
-                )}
+                <Avatar member={selected} size="lg" />
                 <div>
                   <p className="text-base font-bold text-slate-800">{selected.name}</p>
                   <p className="text-xs text-slate-500">{selected.groupLabel}</p>
                 </div>
               </div>
-              <button onClick={() => setSelected(null)} className="text-slate-400"><X size={18} /></button>
+              <div className="flex items-center gap-2">
+                <button onClick={() => startEdit(selected)} className="text-slate-400 hover:text-brand-600"><Pencil size={16} /></button>
+                <button onClick={closeModal} className="text-slate-400"><X size={18} /></button>
+              </div>
             </div>
 
             <div className="space-y-1.5 text-sm">
@@ -184,6 +213,39 @@ export default function Family() {
             )}
 
             <button onClick={() => removeMember(selected.id)} className="w-full text-center text-xs text-rose-500 pt-2">Eliminar de la lista</button>
+          </div>
+        </div>
+      )}
+
+      {selected && editing && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-4" onClick={() => setEditing(false)}>
+          <div className="bg-white rounded-2xl max-w-sm w-full p-5 space-y-2" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-1">
+              <p className="text-base font-bold text-slate-800">Editar perfil</p>
+              <button onClick={() => setEditing(false)} className="text-slate-400"><X size={18} /></button>
+            </div>
+            <div className="flex items-center gap-3">
+              {form.avatar ? <img src={form.avatar} className="w-16 h-20 object-contain rounded-xl bg-slate-50 border border-slate-100" /> : (
+                <div className="w-16 h-20 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg font-bold shrink-0">{form.name ? initials(form.name) : '?'}</div>
+              )}
+              <PhotoUploader onUpload={a => setForm(f => ({ ...f, avatar: a }))} label="Cambiar avatar" />
+            </div>
+            <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Nombre y apellido" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300" />
+            <div className="grid grid-cols-2 gap-2">
+              <input value={form.age} onChange={e => setForm(f => ({ ...f, age: e.target.value }))} type="number" placeholder="Edad" className="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300" />
+              <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="Teléfono" className="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300" />
+            </div>
+            <input
+              value={form.groupLabel}
+              onChange={e => setForm(f => ({ ...f, groupLabel: e.target.value }))}
+              list="group-options"
+              placeholder="Grupo"
+              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300"
+            />
+            <div className="flex gap-2 pt-1">
+              <button onClick={saveEdit} className="flex-1 bg-brand-600 text-white py-2 rounded-lg text-sm font-medium">Guardar cambios</button>
+              <button onClick={() => setEditing(false)} className="px-4 py-2 text-sm text-slate-500">Cancelar</button>
+            </div>
           </div>
         </div>
       )}

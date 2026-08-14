@@ -4,6 +4,7 @@ import { ExternalLink, Search, X } from 'lucide-react';
 import { CHARACTERS } from '../data/trip';
 import { PARK_LABELS, PARK_COLORS, type ParkId } from '../types';
 import CommentThread from '../components/CommentThread';
+import ItemPhotos from '../components/ItemPhotos';
 
 export default function Characters() {
   const [query, setQuery] = useState('');
@@ -65,6 +66,7 @@ export default function Characters() {
               <ExternalLink size={11} /> Fotos de referencia
             </a>
           )}
+          <ItemPhotos itemId={c.id} />
           <CommentThread threadId={c.id} />
         </div>
       ))}
