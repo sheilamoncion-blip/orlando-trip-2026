@@ -40,6 +40,7 @@ export default function DayDetail() {
   const [liveRides, setLiveRides] = useState<LiveRideStatus[] | null>(null);
   const [, forceRerender] = useState(0);
   const [query, setQuery] = useState('');
+  const [openVenue, setOpenVenue] = useState<string | null>(null);
   const tabParam = searchParams.get('tab') as Tab | null;
   const tab: Tab = tabParam && ['atracciones', 'comidas', 'shows', 'personajes'].includes(tabParam) ? tabParam : 'atracciones';
   const setTab = (t: Tab) => setSearchParams(prev => { const next = new URLSearchParams(prev); next.set('tab', t); return next; }, { replace: true });
@@ -159,7 +160,14 @@ export default function DayDetail() {
           <AreaSection key={`meals-${area}`} area={area} defaultOpen={!!query}>
             <div className="space-y-2.5">
               {groupByVenue(items).map(([venue, venueItems]) => (
-                <VenueCard key={venue} venue={venue} items={venueItems} onToggle={toggleDone} />
+                <VenueCard
+                  key={venue}
+                  venue={venue}
+                  items={venueItems}
+                  onToggle={toggleDone}
+                  isOpen={openVenue === venue}
+                  onToggleOpen={() => setOpenVenue(v => v === venue ? null : venue)}
+                />
               ))}
             </div>
           </AreaSection>

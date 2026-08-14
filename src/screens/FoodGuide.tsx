@@ -24,6 +24,7 @@ export default function FoodGuide() {
   const setPark = (p: ParkId) => setSearchParams(prev => { const next = new URLSearchParams(prev); next.set('park', p); return next; }, { replace: true });
   const [query, setQuery] = useState('');
   const [, forceRerender] = useState(0);
+  const [openVenue, setOpenVenue] = useState<string | null>(null);
 
   const toggleDone = (id: string) => {
     db.setDone(id, !db.isDone(id));
@@ -85,7 +86,14 @@ export default function FoodGuide() {
           <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wide mb-2">{area}</h2>
           <div className="space-y-2.5">
             {groupByVenue(items).map(([venue, venueItems]) => (
-              <VenueCard key={venue} venue={venue} items={venueItems} onToggle={toggleDone} />
+              <VenueCard
+                key={venue}
+                venue={venue}
+                items={venueItems}
+                onToggle={toggleDone}
+                isOpen={openVenue === venue}
+                onToggleOpen={() => setOpenVenue(v => v === venue ? null : venue)}
+              />
             ))}
           </div>
         </section>

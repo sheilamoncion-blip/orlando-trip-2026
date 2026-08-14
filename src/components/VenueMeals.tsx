@@ -60,8 +60,13 @@ export function CategoryTag({ meal }: { meal: Meal }) {
   return <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${CATEGORY_COLORS[cat]}`}>{cat}</span>;
 }
 
-export function VenueCard({ venue, items, onToggle, defaultOpen }: { venue: string; items: Meal[]; onToggle: (id: string) => void; defaultOpen?: boolean }) {
-  const [open, setOpen] = useState(!!defaultOpen);
+export function VenueCard({ venue, items, onToggle, defaultOpen, isOpen, onToggleOpen }: {
+  venue: string; items: Meal[]; onToggle: (id: string) => void; defaultOpen?: boolean;
+  isOpen?: boolean; onToggleOpen?: () => void;
+}) {
+  const [localOpen, setLocalOpen] = useState(!!defaultOpen);
+  const open = isOpen ?? localOpen;
+  const setOpen = onToggleOpen ?? (() => setLocalOpen(o => !o));
   const [, forceRerender] = useState(0);
   const doneCount = items.filter(m => db.isDone(m.id)).length;
   const avgTaste = items.reduce((s, m) => s + m.tasteRating, 0) / items.length;
@@ -79,7 +84,7 @@ export function VenueCard({ venue, items, onToggle, defaultOpen }: { venue: stri
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-      <button onClick={() => setOpen(!open)} className="w-full flex items-center gap-3 p-3.5 text-left">
+      <button onClick={() => setOpen()} className="w-full flex items-center gap-3 p-3.5 text-left">
         <div className="flex-1 min-w-0">
           <h3 className="text-sm font-semibold text-slate-800 truncate">{venue}</h3>
           <div className="flex items-center gap-2 mt-0.5">
