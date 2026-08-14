@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import BackButton from '../components/BackButton';
 import PhotoUploader from '../components/PhotoUploader';
-import { Plus, X, MapPinned, Phone, Cake as CakeIcon, Users, Pencil, UserPlus } from 'lucide-react';
+import { Plus, X, MapPinned, Phone, Cake as CakeIcon, Users, Pencil, UserPlus, Trash2 } from 'lucide-react';
 import { db } from '../lib/db';
 import { resizeImage } from '../lib/imageUtils';
 import type { FamilyMember, FamilyGroup } from '../types';
@@ -105,6 +105,20 @@ export default function Family() {
     setEditing(false);
   };
 
+  const removeGroup = (group: FamilyGroup) => {
+    const groupMembers = membersByGroup.get(group.label) || [];
+    const msg = groupMembers.length > 0
+      ? `Esto eliminará "${group.label}" y a sus ${groupMembers.length} integrante${groupMembers.length !== 1 ? 's' : ''}. ¿Continuar?`
+      : `¿Eliminar "${group.label}"?`;
+    if (!confirm(msg)) return;
+    const updatedGroups = groups.filter(g => g.id !== group.id);
+    const updatedMembers = members.filter(m => m.groupLabel !== group.label);
+    setGroups(updatedGroups);
+    setMembers(updatedMembers);
+    db.saveFamilyGroups(updatedGroups);
+    db.saveFamilyMembers(updatedMembers);
+  };
+
   const closeModal = () => { setSelected(null); setEditing(false); };
 
   const shareStatus = () => {
@@ -156,7 +170,12 @@ export default function Family() {
         const groupMembers = membersByGroup.get(group.label) || [];
         return (
           <section key={group.id} className="bg-white rounded-2xl border border-slate-200 shadow-sm p-3.5">
-            <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2.5 flex items-center gap-1.5"><Users size={12} /> {group.label}</h2>
+            <div className="flex items-center justify-between mb-2.5">
+              <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wide flex items-center gap-1.5"><Users size={12} /> {group.label}</h2>
+              <button onClick={() => removeGroup(group)} className="text-slate-300 hover:text-rose-500 transition">
+                <Trash2 size={14} />
+              </button>
+            </div>
             <div className="flex flex-wrap gap-3">
               {groupMembers.map(m => (
                 <button key={m.id} onClick={() => setSelected(m)} className="flex flex-col items-center gap-1 w-20">
