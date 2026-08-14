@@ -6,7 +6,7 @@ import { BIRTHDAYS, TRIP_DAYS, ATTRACTIONS, MEALS } from '../data/trip';
 import { PARK_LABELS } from '../types';
 import BirthdayBanner from '../components/BirthdayBanner';
 import { db } from '../lib/db';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 const QUICK_NAV = [
   { to: '/itinerario', icon: CalendarDays, label: 'Itinerario' },
@@ -18,6 +18,7 @@ const QUICK_NAV = [
 ];
 
 export default function Dashboard() {
+  const [stickerOk, setStickerOk] = useState(true);
   const now = useNow();
   const key = todayKey(now);
   const countdown = useCountdown(TRIP_DAYS[0].date);
@@ -100,6 +101,18 @@ export default function Dashboard() {
           ))}
         </div>
       </div>
+
+      {stickerOk && (
+        <div className="flex justify-center pt-2">
+          <img
+            src="/stickers/home.png"
+            alt=""
+            className="w-28 h-28 object-contain"
+            style={{ filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))' }}
+            onError={() => setStickerOk(false)}
+          />
+        </div>
+      )}
     </div>
   );
 }
