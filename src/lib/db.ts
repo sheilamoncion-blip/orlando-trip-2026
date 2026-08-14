@@ -219,4 +219,23 @@ export const db = {
     save('otp_updates', all.slice(0, 100));
     return update;
   },
+
+  // Respaldo/restauración — todas las claves otp_* como un solo JSON descargable
+  exportAll: (): string => {
+    const backup: Record<string, unknown> = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('otp_')) {
+        try { backup[key] = JSON.parse(localStorage.getItem(key)!); } catch { /* skip corrupt entry */ }
+      }
+    }
+    return JSON.stringify({ exportedAt: new Date().toISOString(), data: backup });
+  },
+  importAll: (json: string) => {
+    const parsed = JSON.parse(json);
+    const data = parsed.data || parsed; // acepta también un respaldo "plano" sin envoltura
+    Object.entries(data).forEach(([key, value]) => {
+      if (key.startsWith('otp_')) localStorage.setItem(key, JSON.stringify(value));
+    });
+  },
 };
