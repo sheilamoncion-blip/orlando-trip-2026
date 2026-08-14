@@ -1,6 +1,7 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import BottomNav from './components/BottomNav';
 import SparkleField from './components/SparkleField';
+import MeModal from './components/MeModal';
 import Dashboard from './screens/Dashboard';
 import ItineraryList from './screens/ItineraryList';
 import DayDetail from './screens/DayDetail';
@@ -22,6 +23,7 @@ export default function App() {
   return (
     <HashRouter>
       <SparkleField />
+      <MeModal />
       <div className="min-h-[100svh] pb-16 relative z-10">
         <Routes>
           <Route path="/" element={<Dashboard />} />

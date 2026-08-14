@@ -302,8 +302,8 @@ function VenueCard({ venue, items, onToggle }: { venue: string; items: Meal[]; o
   const me = db.getMe();
   const iWantToVisit = !!me && interested.includes(me);
 
-  const toggleVisit = () => {
-    const name = ensureMe();
+  const toggleVisit = async () => {
+    const name = await ensureMe();
     if (!name) return;
     db.toggleVisitInterest(venue, name);
     forceRerender(n => n + 1);
@@ -348,8 +348,8 @@ function VenueCard({ venue, items, onToggle }: { venue: string; items: Meal[]; o
 function MealCard({ meal, venue, done, onToggle }: { meal: Meal; venue: string; done: boolean; onToggle: () => void }) {
   const [myStatus, setMyStatus] = useState(() => db.getMyMealStatus(meal.id));
 
-  const toggleTried = () => {
-    const name = ensureMe();
+  const toggleTried = async () => {
+    const name = await ensureMe();
     if (!name) return;
     const next: MyMealStatus = { ...myStatus, tried: !myStatus.tried };
     setMyStatus(next);
@@ -359,8 +359,8 @@ function MealCard({ meal, venue, done, onToggle }: { meal: Meal; venue: string; 
     }
   };
 
-  const setMyRating = (rating: number) => {
-    const name = ensureMe();
+  const setMyRating = async (rating: number) => {
+    const name = await ensureMe();
     if (!name) return;
     const next: MyMealStatus = { tried: true, rating };
     setMyStatus(next);
