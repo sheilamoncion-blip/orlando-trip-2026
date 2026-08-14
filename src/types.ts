@@ -189,6 +189,11 @@ export interface PhotoBoardItem {
   createdAt: string;
 }
 
+export interface FamilyGroup {
+  id: string;
+  label: string; // ej: "Familia Lorenzo Moncion"
+}
+
 export interface FamilyMember {
   id: string;
   name: string;

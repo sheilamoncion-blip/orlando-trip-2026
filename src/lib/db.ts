@@ -1,4 +1,4 @@
-import type { Comment, PhotoBoardItem, FamilyMember, ActivityUpdate } from '../types';
+import type { Comment, PhotoBoardItem, FamilyMember, FamilyGroup, ActivityUpdate } from '../types';
 
 function load<T>(key: string, fallback: T): T {
   try {
@@ -81,6 +81,20 @@ export const db = {
   // Family members — grouped by family unit, with avatar/age/phone
   getFamilyMembers: (): FamilyMember[] => load('otp_family_members', []),
   saveFamilyMembers: (members: FamilyMember[]) => save('otp_family_members', members),
+
+  // Family groups (ej: "Familia Lorenzo Moncion") — contenedores donde se agregan integrantes.
+  // Si no hay grupos guardados pero ya existen miembros con groupLabel (datos viejos), se migran una sola vez.
+  getFamilyGroups: (): FamilyGroup[] => {
+    const groups = load<FamilyGroup[]>('otp_family_groups', []);
+    if (groups.length > 0) return groups;
+    const members = load<FamilyMember[]>('otp_family_members', []);
+    const labels = Array.from(new Set(members.map(m => m.groupLabel).filter(Boolean)));
+    if (labels.length === 0) return [];
+    const migrated = labels.map(label => ({ id: crypto.randomUUID(), label }));
+    save('otp_family_groups', migrated);
+    return migrated;
+  },
+  saveFamilyGroups: (groups: FamilyGroup[]) => save('otp_family_groups', groups),
 
   // Simple name list — used by assignee dropdowns (Epcot challenge, TikTok/Instagram ideas)
   getFamily: (): string[] => {
