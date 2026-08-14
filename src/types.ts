@@ -134,15 +134,15 @@ export interface TikTokIdea {
   park: ParkId | 'any';
 }
 
-export interface InstagramIdea {
+export interface InstagramPost {
   id: string;
-  title: string;
-  format: 'Reel' | 'Carrusel' | 'Story';
-  description: string;
-  hashtags: string[];
-  bestTime: string;
-  viralPotential: 1 | 2 | 3 | 4 | 5;
-  park: ParkId | 'any';
+  link: string; // URL al post/reel real de Instagram
+  photo?: string; // foto de referencia (dataUrl)
+  who: string[]; // familiares etiquetados/que salen en el post
+  location?: string; // texto libre, ej: "Frente al castillo"
+  park?: ParkId | 'any';
+  uploadedBy?: string;
+  createdAt: string;
 }
 
 export interface PersonalizationItem {

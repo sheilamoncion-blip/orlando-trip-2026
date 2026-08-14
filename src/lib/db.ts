@@ -1,9 +1,9 @@
-import type { Comment, PhotoBoardItem, FamilyMember, FamilyGroup, ActivityUpdate } from '../types';
+import type { Comment, PhotoBoardItem, FamilyMember, FamilyGroup, ActivityUpdate, InstagramPost } from '../types';
 import { idbGet, idbSet, idbGetAllEntries, idbClearAll } from './idb';
 
 // Claves cuyo contenido (fotos/avatares en base64) es demasiado pesado para localStorage
 // (~5-10MB de cuota) — se guardan en IndexedDB en su lugar, que soporta cientos de MB.
-const MEDIA_KEYS = ['otp_family_members', 'otp_photoboard', 'otp_item_photos', 'otp_park_maps'] as const;
+const MEDIA_KEYS = ['otp_family_members', 'otp_photoboard', 'otp_item_photos', 'otp_park_maps', 'otp_instagram_posts'] as const;
 
 function load<T>(key: string, fallback: T): T {
   try {
@@ -107,6 +107,10 @@ export const db = {
   // Photo inspiration board
   getPhotoBoard: (): Promise<PhotoBoardItem[]> => idbGet('otp_photoboard', []),
   savePhotoBoard: (items: PhotoBoardItem[]) => idbSet('otp_photoboard', items),
+
+  // Fichas de Instagram — link real + foto de referencia + tags de quiénes/dónde, agregadas a mano
+  getInstagramPosts: (): Promise<InstagramPost[]> => idbGet('otp_instagram_posts', []),
+  saveInstagramPosts: (items: InstagramPost[]) => idbSet('otp_instagram_posts', items),
 
   // Personalization shop orders
   isOrdered: (itemId: string): boolean => load<Record<string, boolean>>('otp_ordered', {})[itemId] || false,
