@@ -1,5 +1,6 @@
 import type { Comment, PhotoBoardItem, FamilyMember, FamilyGroup, ActivityUpdate, InstagramPost } from '../types';
 import { idbGet, idbSet, idbGetAllEntries, idbClearAll } from './idb';
+import { DEFAULT_FAMILY_GROUPS, DEFAULT_FAMILY_MEMBERS } from '../data/family';
 
 // Claves cuyo contenido (fotos/avatares en base64) es demasiado pesado para localStorage
 // (~5-10MB de cuota) — se guardan en IndexedDB en su lugar, que soporta cientos de MB.
@@ -86,14 +87,14 @@ export const db = {
   // Family members — grouped by family unit, con avatar/edad/teléfono. Viven en IndexedDB
   // (los avatares en base64 son pesados); se mantiene un cache liviano de solo nombres en
   // localStorage (ver getFamily) para que los selectores de "¿quién?" sigan siendo síncronos.
-  getFamilyMembers: (): Promise<FamilyMember[]> => idbGet('otp_family_members', []),
+  getFamilyMembers: (): Promise<FamilyMember[]> => idbGet('otp_family_members', DEFAULT_FAMILY_MEMBERS),
   saveFamilyMembers: async (members: FamilyMember[]) => {
     await idbSet('otp_family_members', members);
     save('otp_family_names_cache', members.map(m => m.name));
   },
 
-  // Family groups (ej: "Familia Lorenzo Moncion") — contenedores donde se agregan integrantes.
-  getFamilyGroups: (): FamilyGroup[] => load<FamilyGroup[]>('otp_family_groups', []),
+  // Family groups (ej: "Familia Lorenzo") — contenedores donde se agregan integrantes.
+  getFamilyGroups: (): FamilyGroup[] => load<FamilyGroup[]>('otp_family_groups', DEFAULT_FAMILY_GROUPS),
   saveFamilyGroups: (groups: FamilyGroup[]) => save('otp_family_groups', groups),
 
   // Simple name list — used by assignee dropdowns (Epcot challenge, TikTok/Instagram ideas).
@@ -101,7 +102,7 @@ export const db = {
   getFamily: (): string[] => {
     const cached = load<string[]>('otp_family_names_cache', []);
     if (cached.length > 0) return cached;
-    return load('otp_family', ['Sheila', 'Carlos Manuel']);
+    return DEFAULT_FAMILY_MEMBERS.map(m => m.name);
   },
 
   // Photo inspiration board
