@@ -1,4 +1,4 @@
-// Universal Studios Florida — Aug 23, 2026 (Carlos Manuel's 45th birthday)
+// Universal Studios Florida — Aug 23, 2026 (Carlos Manuel's 46th birthday)
 // Official ride names + heights from the printed park map (UniversalOrlandoMap.pdf).
 // Wait-time patterns, ratings, photo/outfit tips from the family's ultra-detailed area guides.
 import type { Attraction, Meal, CharacterMeet, AreaGuide, HourlyWait } from '../types';

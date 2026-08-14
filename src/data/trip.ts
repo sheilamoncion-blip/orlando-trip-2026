@@ -17,8 +17,8 @@ export const TRIP_DAYS: TripDay[] = [
 ];
 
 export const VISITED_PARKS: VisitedPark[] = [
-  { parkId: 'universal', date: '2026-08-23', dayLabel: 'Día 1 — Carlos 45' },
-  { parkId: 'islands', date: '2026-08-23', dayLabel: 'Día 1 — Carlos 45' },
+  { parkId: 'universal', date: '2026-08-23', dayLabel: 'Día 1 — Carlos 46' },
+  { parkId: 'islands', date: '2026-08-23', dayLabel: 'Día 1 — Carlos 46' },
   { parkId: 'epic', date: '2026-08-25', dayLabel: 'Día 2 — Sheila 37' },
   { parkId: 'magic-kingdom', date: '2026-08-27', dayLabel: 'Día 3' },
   { parkId: 'epcot', date: '2026-08-29', dayLabel: 'Día 4 — Festival de Comida y Vino' },
@@ -26,7 +26,7 @@ export const VISITED_PARKS: VisitedPark[] = [
 
 export const BIRTHDAYS: BirthdayPerson[] = [
   {
-    id: 'carlos', name: 'Carlos Manuel', age: 45, date: '2026-08-23', park: 'universal',
+    id: 'carlos', name: 'Carlos Manuel', age: 46, date: '2026-08-23', park: 'universal',
     perks: [
       'Pide la pulsera "Celebrating" en Guest Services (GRATIS)',
       'Pregunta por descuentos/postres gratis de cumpleaños',
@@ -34,7 +34,7 @@ export const BIRTHDAYS: BirthdayPerson[] = [
       'Pastel de cumpleaños (ordenar 1 día antes, $35-60)',
       'Foto grupal para el recuerdo',
     ],
-    mainGift: 'Varita personalizada "Carlos 45" ($45-60)',
+    mainGift: 'Varita personalizada "Carlos 46" ($45-60)',
     altGifts: ['Pastel de cumpleaños ($35-60)', 'Champagne en Mythos ($35)'],
   },
   {
@@ -308,7 +308,7 @@ export const INSTAGRAM_IDEAS: InstagramIdea[] = [
   ig('Reel de transformación', 'Reel', 'Antes/después: la fila vs. la cara de emoción en la atracción — corte rápido con audio trending.', ['#UniversalOrlando', '#ThemePark'], 'Justo al bajar de la atracción', 4, 'any'),
   ig('Story "encuesta"', 'Story', 'Pregunta a los seguidores: "¿Cuál probamos primero?" con foto de 2-3 platillos del reto de Epcot.', ['#EatAroundTheWorld'], 'Durante el reto de los 11 países', 3, 'epcot'),
   ig('Reel POV atracción', 'Reel', 'Grabación en primera persona (POV) de la fila hasta subir — bien editado con música que combine el ritmo.', ['#POV', '#Universal'], 'En la fila, cámara al frente', 5, 'any'),
-  ig('Story cuenta regresiva cumpleaños', 'Story', 'Cuenta regresiva de Instagram con foto de Carlos/Sheila el día de su cumpleaños.', ['#Cumpleaños45', '#Cumpleaños37'], 'La mañana del cumpleaños', 4, 'any'),
+  ig('Story cuenta regresiva cumpleaños', 'Story', 'Cuenta regresiva de Instagram con foto de Carlos/Sheila el día de su cumpleaños.', ['#Cumpleaños46', '#Cumpleaños37'], 'La mañana del cumpleaños', 4, 'any'),
   ig('Carrusel comparativo', 'Carrusel', 'Foto de referencia de Pinterest al lado de la foto real de la familia recreándola.', ['#DisneyBound'], 'Después de recrear varias fotos del tablero', 4, 'any'),
   ig('Reel resumen del viaje', 'Reel', 'Compilado final de los 9 días — el más importante, guardar para el último día.', ['#OrlandoTrip2026', '#FamiliaLorenzo'], 'Último día, antes de salir', 5, 'any'),
 ];
@@ -319,7 +319,7 @@ export const PERSONALIZATION: PersonalizationItem[] = [
   p('magic-kingdom', 'Tiara de princesa grabada', '$60-120', 'Grabado personalizado', '30-45 min', 'Uptown Jewelers, Main Street', 'sheila'),
   p('epcot', 'Pasaporte personalizado', '$25-40', 'Grabado gratis en la tapa', '15-20 min', 'World Showcase — tienda de pasaportes', undefined),
   p('epcot', 'Jarra de butterbeer grabada', '$25-35', 'Grabado personalizado', '15-20 min', 'World Showcase', undefined),
-  p('universal', 'Varita personalizada "Carlos 45"', '$45-60', 'Grabado del nombre en la varita', '20-30 min', 'Ollivanders, Diagon Alley / Hogsmeade', 'carlos'),
+  p('universal', 'Varita personalizada "Carlos 46"', '$45-60', 'Grabado del nombre en la varita', '20-30 min', 'Ollivanders, Diagon Alley / Hogsmeade', 'carlos'),
 ];
 
 function a(park: Attraction['park'], day: string, name: string, durationMin: number, typicalWaitMin: number, heightMinIn: number | null, intensity: 1|2|3|4|5, photoTip: string, referenceLinks: string[], nearbyCharacters: string[]): Attraction {
