@@ -637,6 +637,20 @@ export const NEWYORK_MEALS: Meal[] = [
   { id: 'us-avenue-beer', park: 'universal', area: 'New York', day: DAY, venue: 'Avenue Eats',
     name: 'Cerveza', priceRange: '$10.75-$13', tasteRating: 3, photogenicRating: 2, typicalWaitMin: 10,
     recommended: ['Selección de cerveza del punto de venta'], addOns: [], dietary: 'Contiene alcohol — 21+' },
+
+  // ───── Central Park Crepes ─────
+  { id: 'us-central-park-brisket-crepe', park: 'universal', area: 'New York', day: DAY, venue: 'Central Park Crepes',
+    name: 'Smoked Brisket Crepe', priceRange: '$13.99', tasteRating: 5, photogenicRating: 4, typicalWaitMin: 15,
+    recommended: ['Brisket ahumado, hash de maíz y manzana, queso pepper jack, BBQ de sidra de manzana, micro cilantro'], addOns: [], dietary: 'Res, lácteos, gluten' },
+  { id: 'us-central-park-lemon-blueberry', park: 'universal', area: 'New York', day: DAY, venue: 'Central Park Crepes',
+    name: 'Lemon Blueberry Crepe', priceRange: '$12.99', tasteRating: 5, photogenicRating: 5, typicalWaitMin: 15,
+    recommended: ['Panqué de limón, lemon curd, arándanos frescos, crema batida, azúcar glass'], addOns: [], photoTip: 'Los arándanos frescos y el azúcar glass encima se ven muy bien en foto de cerca.', dietary: 'Vegetariano — gluten, lácteos, huevo' },
+  { id: 'us-central-park-strawberry-hazelnut', park: 'universal', area: 'New York', day: DAY, venue: 'Central Park Crepes',
+    name: 'Strawberry Hazelnut Crepe', priceRange: '$10.99', tasteRating: 5, photogenicRating: 5, typicalWaitMin: 15,
+    recommended: ['Fresas con mascarpone de Nutella, Nutella, fresas, crema batida y azúcar glass'], addOns: [], photoTip: 'El relleno de Nutella asomando al cortar — muy fotogénico.', dietary: 'Vegetariano — gluten, lácteos, huevo, avellana' },
+  { id: 'us-central-park-freestyle', park: 'universal', area: 'New York', day: DAY, venue: 'Central Park Crepes',
+    name: 'Vaso individual Coca-Cola Freestyle®', priceRange: '$4.79', tasteRating: 3, photogenicRating: 2, typicalWaitMin: 5,
+    recommended: ['Más de 100 combinaciones de bebida con el vaso individual Freestyle®'], addOns: [], dietary: 'Varía según bebida' },
 ];
 
 export const NEWYORK_AREA_GUIDE: AreaGuide = {
