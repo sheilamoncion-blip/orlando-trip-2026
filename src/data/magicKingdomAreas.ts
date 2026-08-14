@@ -34,14 +34,14 @@ export const ADVENTURELAND_ATTRACTIONS: Attraction[] = [
 export const ADVENTURELAND_MEALS: Meal[] = [
   {
     id: 'mk-skipper-canteen', park: 'magic-kingdom', area: 'Adventureland', day: DAY,
-    name: 'Skipper Canteen (Cantina del capitán)', priceRange: '$18-26', tasteRating: 4, photogenicRating: 4, typicalWaitMin: 15,
+    name: 'Skipper Canteen', priceRange: '$18-26', tasteRating: 4, photogenicRating: 4, typicalWaitMin: 15,
     recommended: ['Pao de Queijo (menú secreto — pregunta por él)', 'Falls Family Falafel'], addOns: [],
     photoTip: 'Ambiente de exploradores años 30 — buen fondo temático.', dietary: 'Opciones vegetarianas disponibles',
     guide: 'Table service asequible, temática divertida con "chistes de skipper" en el menú.',
   },
   {
     id: 'mk-aloha-isle', park: 'magic-kingdom', area: 'Adventureland', day: DAY,
-    name: 'Aloha Isle — Dole Whip (Remolino de piña helado)', priceRange: '$6-9', tasteRating: 5, photogenicRating: 4, typicalWaitMin: 15,
+    name: 'Aloha Isle — Dole Whip', priceRange: '$6-9', tasteRating: 5, photogenicRating: 4, typicalWaitMin: 15,
     recommended: ['Dole Whip clásico (piña)', 'Dole Whip float'], addOns: [{ label: 'Float (con jugo de piña)', price: 2 }],
     photoTip: 'El swirl amarillo brillante contra el cielo — clásico infaltable de Magic Kingdom.',
     dietary: 'Vegano',
@@ -81,7 +81,7 @@ export const FRONTIERLAND_ATTRACTIONS: Attraction[] = [
 export const FRONTIERLAND_MEALS: Meal[] = [
   {
     id: 'mk-pecos-bill', park: 'magic-kingdom', area: 'Frontierland', day: DAY,
-    name: 'Pecos Bill Tall Tale Inn (La posada de cuentos de Pecos Bill)', priceRange: '$12-16', tasteRating: 3, photogenicRating: 3, typicalWaitMin: 10,
+    name: 'Pecos Bill Tall Tale Inn', priceRange: '$12-16', tasteRating: 3, photogenicRating: 3, typicalWaitMin: 10,
     recommended: ['Nachos con carne', 'Burrito bowl'], addOns: [], photoTip: 'Barra de toppings ilimitados — arma tu plato antes de la foto.',
   },
 ];
@@ -109,7 +109,7 @@ export const LIBERTYSQUARE_ATTRACTIONS: Attraction[] = [
 export const LIBERTYSQUARE_MEALS: Meal[] = [
   {
     id: 'mk-columbia-harbour', park: 'magic-kingdom', area: 'Liberty Square', day: DAY,
-    name: 'Columbia Harbour House (Casa portuaria Columbia)', priceRange: '$13-17', tasteRating: 4, photogenicRating: 3, typicalWaitMin: 15,
+    name: 'Columbia Harbour House', priceRange: '$13-17', tasteRating: 4, photogenicRating: 3, typicalWaitMin: 15,
     recommended: ['Fish & chips', 'Lobster roll (temporada)'], addOns: [], photoTip: 'Piso superior con ambiente de posada marinera — mesas junto a la ventana.',
   },
 ];
@@ -153,7 +153,7 @@ export const FANTASYLAND_ATTRACTIONS: Attraction[] = [
 export const FANTASYLAND_MEALS: Meal[] = [
   {
     id: 'mk-be-our-guest', park: 'magic-kingdom', area: 'Fantasyland', day: DAY,
-    name: 'Be Our Guest (Sé nuestro invitado)', priceRange: '$20-35', tasteRating: 4, photogenicRating: 5, typicalWaitMin: 20,
+    name: 'Be Our Guest', priceRange: '$20-35', tasteRating: 4, photogenicRating: 5, typicalWaitMin: 20,
     recommended: ['Filete de res', 'Sopa de cebolla francesa'], addOns: [],
     photoTip: 'El salón del castillo de la Bestia (West Wing con la rosa encantada) es la foto — pide sentarte ahí.',
     guide: 'Ambientado en el castillo de la Bestia — reserva con anticipación si es posible.',
@@ -212,7 +212,7 @@ export const TOMORROWLAND_ATTRACTIONS: Attraction[] = [
 export const TOMORROWLAND_MEALS: Meal[] = [
   {
     id: 'mk-cosmic-rays', park: 'magic-kingdom', area: 'Tomorrowland', day: DAY,
-    name: "Cosmic Ray's Starlight Café (Café bajo las estrellas de Cosmic Ray)", priceRange: '$12-16', tasteRating: 3, photogenicRating: 3, typicalWaitMin: 15,
+    name: "Cosmic Ray's Starlight Café", priceRange: '$12-16', tasteRating: 3, photogenicRating: 3, typicalWaitMin: 15,
     recommended: ['Rotisserie chicken', 'Combo de hamburguesa'], addOns: [], photoTip: 'Show del robot Sonny Eclipse mientras comes.',
   },
 ];

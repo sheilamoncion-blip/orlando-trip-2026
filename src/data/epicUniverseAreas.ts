@@ -36,14 +36,14 @@ export const CELESTIAL_ATTRACTIONS: Attraction[] = [
 export const CELESTIAL_MEALS: Meal[] = [
   {
     id: 'epic-atlantic', park: 'epic', area: 'Celestial Park', day: DAY,
-    name: 'Atlantic (fine dining) (Alta cocina de mariscos)', priceRange: '$35-60', tasteRating: 5, photogenicRating: 5, typicalWaitMin: 0,
+    name: 'Atlantic (fine dining)', priceRange: '$35-60', tasteRating: 5, photogenicRating: 5, typicalWaitMin: 0,
     recommended: ['Surf and turf', 'vista al acuario victoriano de Celestial Park'], addOns: [{ label: 'Copa de champagne', price: 14 }],
     photoTip: 'El interior estilo acuario victoriano es la foto — pide mesa cerca de la ventana.',
     dietary: 'Requiere reserva con anticipación', guide: 'Ideal para una celebración de cumpleaños — el restaurante insignia del parque.',
   },
   {
     id: 'epic-pizza-moon', park: 'epic', area: 'Celestial Park', day: DAY,
-    name: 'Pizza Moon (Pizza de la luna)', priceRange: '$14-20', tasteRating: 4, photogenicRating: 4, typicalWaitMin: 15,
+    name: 'Pizza Moon', priceRange: '$14-20', tasteRating: 4, photogenicRating: 4, typicalWaitMin: 15,
     recommended: ['Pizza clásica', 'decoración de teatro de juguete victoriano'], addOns: [],
     photoTip: 'El interior temático de teatro de juguete es único — foto del ambiente completo.',
   },
@@ -81,7 +81,7 @@ export const NINTENDO_ATTRACTIONS: Attraction[] = [
 export const NINTENDO_MEALS: Meal[] = [
   {
     id: 'epic-toadstool-cafe', park: 'epic', area: 'Super Nintendo World', day: DAY,
-    name: 'Toadstool Café (Café del hongo)', priceRange: '$14-20', tasteRating: 4, photogenicRating: 5, typicalWaitMin: 20,
+    name: 'Toadstool Café', priceRange: '$14-20', tasteRating: 4, photogenicRating: 5, typicalWaitMin: 20,
     recommended: ['Hamburguesa temática de hongo', 'Pasta Toad'], addOns: [{ label: 'Bebida Power-Up (souvenir)', price: 7 }],
     photoTip: 'El plato con forma de hongo es MUY fotogénico — flat-lay desde arriba.', dietary: 'Contiene gluten y lácteos',
   },
@@ -134,7 +134,7 @@ export const BERK_ATTRACTIONS: Attraction[] = [
 export const BERK_MEALS: Meal[] = [
   {
     id: 'epic-mead-hall', park: 'epic', area: 'Isle of Berk', day: DAY,
-    name: 'Mead Hall (Salón vikingo del hidromiel)', priceRange: '$18-28', tasteRating: 4, photogenicRating: 4, typicalWaitMin: 20,
+    name: 'Mead Hall', priceRange: '$18-28', tasteRating: 4, photogenicRating: 4, typicalWaitMin: 20,
     recommended: ['Costillas ahumadas', 'Pollo asado estilo vikingo'], addOns: [{ label: 'Cuerno de miel fermentada (souvenir)', price: 9 }],
     photoTip: 'El salón temático vikingo con mesas largas de madera es la foto de ambiente.', dietary: 'Contiene gluten',
     guide: 'Buena opción de grupo grande — mesas comunales estilo salón vikingo.',
@@ -164,13 +164,13 @@ export const MINISTRY_ATTRACTIONS: Attraction[] = [
 export const MINISTRY_MEALS: Meal[] = [
   {
     id: 'epic-le-gobelet-noir', park: 'epic', area: 'Ministry of Magic', day: DAY,
-    name: 'Le Gobelet Noir (La copa negra)', priceRange: '$16-24', tasteRating: 4, photogenicRating: 4, typicalWaitMin: 15,
+    name: 'Le Gobelet Noir', priceRange: '$16-24', tasteRating: 4, photogenicRating: 4, typicalWaitMin: 15,
     recommended: ['Platos de inspiración francesa/mágica'], addOns: [],
     photoTip: 'Ambiente elegante estilo café parisino mágico.',
   },
   {
     id: 'epic-bieraubeurre', park: 'epic', area: 'Ministry of Magic', day: DAY,
-    name: 'French Butterbeer (carrito Bièraubeurre) (Cerveza de mantequilla estilo francés)', priceRange: '$7-11', tasteRating: 5, photogenicRating: 5, typicalWaitMin: 5,
+    name: 'French Butterbeer (carrito Bièraubeurre)', priceRange: '$7-11', tasteRating: 5, photogenicRating: 5, typicalWaitMin: 5,
     recommended: ['Frozen en agosto', 'versión francesa del clásico Butterbeer'], addOns: [{ label: 'Vaso souvenir', price: 4 }],
     photoTip: 'Espuma cremosa de cerca, con las puertas del Ministerio de fondo.',
   },
@@ -207,7 +207,7 @@ export const DARKUNIVERSE_ATTRACTIONS: Attraction[] = [
 export const DARKUNIVERSE_MEALS: Meal[] = [
   {
     id: 'epic-das-stakehaus', park: 'epic', area: 'Dark Universe', day: DAY,
-    name: 'Das Stakehaus (La casa de estacas/carnes)', priceRange: '$16-24', tasteRating: 4, photogenicRating: 3, typicalWaitMin: 15,
+    name: 'Das Stakehaus', priceRange: '$16-24', tasteRating: 4, photogenicRating: 3, typicalWaitMin: 15,
     recommended: ['Bratwurst', 'Schnitzel estilo alemán transilvano'], addOns: [],
     photoTip: 'Ambiente de taberna gótica europea.',
   },

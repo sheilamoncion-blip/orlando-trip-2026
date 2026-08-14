@@ -77,8 +77,8 @@ export const MEALS: Meal[] = [
   ...UNIVERSAL_STUDIOS_MEALS,
 
   // Aug 23 - Islands of Adventure
-  m('islands', '2026-08-23', 'Mythos Restaurant (Restaurante Mythos)', '$25-45', 5, 5, 20, ['Salmón glaseado con miel y limón', 'Risotto de camarones', 'Pastel de chocolate y banana'], [{ label: 'Copa de vino', price: 12 }]),
-  m('islands', '2026-08-23', 'Three Broomsticks (Las Tres Escobas)', '$15-20', 4, 4, 15, ['Fish & chips', 'Turkey leg'], [{ label: 'Butterbeer helado', price: 6 }, { label: 'Cerveza + Vaso Vikingo', price: 5 }]),
+  m('islands', '2026-08-23', 'Mythos Restaurant', '$25-45', 5, 5, 20, ['Salmón glaseado con miel y limón', 'Risotto de camarones', 'Pastel de chocolate y banana'], [{ label: 'Copa de vino', price: 12 }]),
+  m('islands', '2026-08-23', 'Three Broomsticks', '$15-20', 4, 4, 15, ['Fish & chips', 'Turkey leg'], [{ label: 'Butterbeer helado', price: 6 }, { label: 'Cerveza + Vaso Vikingo', price: 5 }]),
 
   // The Frying Dutchman — Amity Island (Islands of Adventure)
   { id: 'islands-frying-dutchman-combo', park: 'islands', day: '2026-08-23', venue: 'The Frying Dutchman', name: 'Battered Fish and Shrimp Combo (Combo de pescado y camarón empanizado)', priceRange: '$24.49', tasteRating: 5, photogenicRating: 3, typicalWaitMin: 15, recommended: ['Bacalao fresco cortado a mano en batter, camarón empanizado, papas fritas, con malteada'], addOns: [], dietary: 'Pescado, mariscos, gluten' },
