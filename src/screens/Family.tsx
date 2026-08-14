@@ -3,7 +3,7 @@ import BackButton from '../components/BackButton';
 import PhotoUploader from '../components/PhotoUploader';
 import { Plus, X, MapPinned, Phone, Cake as CakeIcon, Users, Pencil } from 'lucide-react';
 import { db } from '../lib/db';
-import { removeBackground } from '../lib/imageUtils';
+import { resizeImage } from '../lib/imageUtils';
 import type { FamilyMember } from '../types';
 
 function groupByLabel(members: FamilyMember[]): [string, FamilyMember[]][] {
@@ -52,10 +52,14 @@ export default function Family() {
       phone: form.phone.trim() || undefined, avatar: form.avatar || undefined, groupLabel: form.groupLabel.trim(),
     };
     const updated = [...members, member];
-    setMembers(updated);
-    db.saveFamilyMembers(updated);
-    setForm(emptyForm);
-    setShowForm(false);
+    try {
+      db.saveFamilyMembers(updated);
+      setMembers(updated);
+      setForm(emptyForm);
+      setShowForm(false);
+    } catch {
+      alert('No se pudo guardar — el navegador se quedó sin espacio. Intenta con un avatar más liviano.');
+    }
   };
 
   const startEdit = (m: FamilyMember) => {
@@ -70,10 +74,14 @@ export default function Family() {
       phone: form.phone.trim() || undefined, avatar: form.avatar || undefined, groupLabel: form.groupLabel.trim(),
     };
     const updated = members.map(m => m.id === selected.id ? updatedMember : m);
-    setMembers(updated);
-    db.saveFamilyMembers(updated);
-    setSelected(updatedMember);
-    setEditing(false);
+    try {
+      db.saveFamilyMembers(updated);
+      setMembers(updated);
+      setSelected(updatedMember);
+      setEditing(false);
+    } catch {
+      alert('No se pudo guardar — el navegador se quedó sin espacio. Intenta con un avatar más liviano.');
+    }
   };
 
   const removeMember = (id: string) => {
@@ -117,7 +125,7 @@ export default function Family() {
             ) : (
               <div className="w-16 h-20 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg font-bold shrink-0">{form.name ? initials(form.name) : '?'}</div>
             )}
-            <PhotoUploader onUpload={async a => { const bg = await removeBackground(a); setForm(f => ({ ...f, avatar: bg })); }} label="Subir avatar" />
+            <PhotoUploader onUpload={async a => { const small = await resizeImage(a, 600); setForm(f => ({ ...f, avatar: small })); }} label="Subir avatar" />
           </div>
           <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Nombre y apellido" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300" />
           <div className="grid grid-cols-2 gap-2">
@@ -233,7 +241,7 @@ export default function Family() {
               ) : (
                 <div className="w-16 h-20 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg font-bold shrink-0">{form.name ? initials(form.name) : '?'}</div>
               )}
-              <PhotoUploader onUpload={async a => { const bg = await removeBackground(a); setForm(f => ({ ...f, avatar: bg })); }} label="Cambiar avatar" />
+              <PhotoUploader onUpload={async a => { const small = await resizeImage(a, 600); setForm(f => ({ ...f, avatar: small })); }} label="Cambiar avatar" />
             </div>
             <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Nombre y apellido" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300" />
             <div className="grid grid-cols-2 gap-2">

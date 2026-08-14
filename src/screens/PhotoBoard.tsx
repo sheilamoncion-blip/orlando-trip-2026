@@ -3,6 +3,7 @@ import BackButton from '../components/BackButton';
 import { Trash2, Search, X } from 'lucide-react';
 import PhotoUploader from '../components/PhotoUploader';
 import { db } from '../lib/db';
+import { resizeImage } from '../lib/imageUtils';
 import type { PhotoBoardItem, ParkId } from '../types';
 import { PARK_LABELS } from '../types';
 
@@ -25,11 +26,16 @@ export default function PhotoBoard() {
     return name;
   };
 
-  const upload = (type: 'reference' | 'ours') => (dataUrl: string, filename: string) => {
-    const item: PhotoBoardItem = { id: crypto.randomUUID(), type, park: 'any', dataUrl, filename, uploadedBy: currentUploader(), createdAt: new Date().toISOString() };
-    const updated = [item, ...items];
-    setItems(updated);
-    db.savePhotoBoard(updated);
+  const upload = (type: 'reference' | 'ours') => async (dataUrl: string, filename: string) => {
+    try {
+      const resized = await resizeImage(dataUrl);
+      const item: PhotoBoardItem = { id: crypto.randomUUID(), type, park: 'any', dataUrl: resized, filename, uploadedBy: currentUploader(), createdAt: new Date().toISOString() };
+      const updated = [item, ...items];
+      db.savePhotoBoard(updated);
+      setItems(updated);
+    } catch {
+      alert('No se pudo guardar la foto — el navegador se quedó sin espacio de almacenamiento. Borra alguna foto vieja e intenta de nuevo.');
+    }
   };
 
   const updateItem = (id: string, patch: Partial<PhotoBoardItem>) => {

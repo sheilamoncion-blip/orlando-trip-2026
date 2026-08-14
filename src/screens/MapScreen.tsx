@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { MapPin, ChevronDown, Image as ImageIcon, X, ZoomIn } from 'lucide-react';
 import { PARK_LABELS, PARK_COLORS, type ParkId } from '../types';
@@ -36,7 +37,10 @@ const parkIcon = (color: string) => L.divIcon({
 type Tab = 'interactivo' | 'parques';
 
 export default function MapScreen() {
-  const [tab, setTab] = useState<Tab>('interactivo');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabParam = searchParams.get('tab') as Tab | null;
+  const tab: Tab = tabParam === 'parques' ? 'parques' : 'interactivo';
+  const setTab = (t: Tab) => setSearchParams(prev => { const next = new URLSearchParams(prev); next.set('tab', t); return next; }, { replace: true });
   const [filter, setFilter] = useState<MapFilter>('all');
 
   return (

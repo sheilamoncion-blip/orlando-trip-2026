@@ -2,14 +2,20 @@ import { useState } from 'react';
 import { Trash2, X } from 'lucide-react';
 import PhotoUploader from './PhotoUploader';
 import { db } from '../lib/db';
+import { resizeImage } from '../lib/imageUtils';
 
 export default function ItemPhotos({ itemId }: { itemId: string }) {
   const [photos, setPhotos] = useState<string[]>(() => db.getItemPhotos(itemId));
   const [zoomed, setZoomed] = useState<string | null>(null);
 
-  const upload = (dataUrl: string) => {
-    db.addItemPhoto(itemId, dataUrl);
-    setPhotos(db.getItemPhotos(itemId));
+  const upload = async (dataUrl: string) => {
+    try {
+      const resized = await resizeImage(dataUrl);
+      db.addItemPhoto(itemId, resized);
+      setPhotos(db.getItemPhotos(itemId));
+    } catch {
+      alert('No se pudo guardar la foto — el navegador se quedó sin espacio de almacenamiento. Intenta borrar alguna foto vieja y vuelve a intentar.');
+    }
   };
 
   const remove = (index: number) => {

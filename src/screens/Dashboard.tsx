@@ -38,7 +38,7 @@ export default function Dashboard() {
 
   return (
     <div className="p-4 pb-24 space-y-4 max-w-lg mx-auto">
-      <header className="pt-2">
+      <header className="pt-2 text-center">
         <p className="text-xs font-semibold uppercase tracking-wider text-brand-600">Orlando Trip 2026</p>
         <h1 className="text-2xl font-extrabold text-slate-800">¡Hola, familia! 👋</h1>
       </header>
@@ -91,7 +91,7 @@ export default function Dashboard() {
       )}
 
       <div>
-        <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-2 px-1">Acceso rápido</p>
+        <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-2 px-1 text-center">Acceso rápido</p>
         <div className="grid grid-cols-3 gap-2">
           {QUICK_NAV.map(n => (
             <Link key={n.label} to={n.to} className="tap-scale bg-white rounded-xl border border-slate-200 p-3 flex flex-col items-center gap-1.5 shadow-sm hover:border-brand-300 transition">

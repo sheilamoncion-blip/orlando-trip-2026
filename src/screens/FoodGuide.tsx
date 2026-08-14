@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Utensils, Search, X } from 'lucide-react';
 import BackButton from '../components/BackButton';
 import { MEALS, VISITED_PARKS } from '../data/trip';
@@ -17,7 +18,10 @@ function groupByArea(meals: typeof MEALS): [string, typeof MEALS][] {
 
 export default function FoodGuide() {
   const parks = useMemo(() => Array.from(new Set(VISITED_PARKS.map(p => p.parkId))), []);
-  const [park, setPark] = useState<ParkId>(parks[0]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const parkParam = searchParams.get('park') as ParkId | null;
+  const park: ParkId = parkParam && parks.includes(parkParam) ? parkParam : parks[0];
+  const setPark = (p: ParkId) => setSearchParams(prev => { const next = new URLSearchParams(prev); next.set('park', p); return next; }, { replace: true });
   const [query, setQuery] = useState('');
   const [, forceRerender] = useState(0);
 

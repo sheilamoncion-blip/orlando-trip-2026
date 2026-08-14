@@ -1,3 +1,30 @@
+/** Resizes/compresses an uploaded photo before storing it in localStorage. Phone camera
+ * photos are often 3-8 MB — a handful of those blow past the ~5-10 MB localStorage quota,
+ * which makes uploads silently fail (the write throws and nothing gets saved, with no
+ * visible error). Downscaling to a reasonable max dimension + re-encoding as JPEG keeps
+ * each photo in the tens-of-KB range so many can be stored safely. */
+export function resizeImage(dataUrl: string, maxDim = 1280, quality = 0.8): Promise<string> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return resolve(dataUrl);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      } catch {
+        resolve(dataUrl);
+      }
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
 /** Background removal via flood-fill from the image borders: starts at every edge
  * pixel and spreads inward through connected pixels that are close in color to their
  * neighbors, treating only that connected region as background. Unlike a naive global

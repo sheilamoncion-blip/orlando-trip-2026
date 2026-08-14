@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import BackButton from '../components/BackButton';
 import ItemPhotos from '../components/ItemPhotos';
 import { Clock, Ruler, ExternalLink, Users2, Check, ChevronDown, Shirt, Search, X } from 'lucide-react';
@@ -36,10 +36,13 @@ type Tab = 'atracciones' | 'comidas' | 'shows' | 'personajes';
 
 export default function DayDetail() {
   const { date } = useParams<{ date: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [liveRides, setLiveRides] = useState<LiveRideStatus[] | null>(null);
   const [, forceRerender] = useState(0);
   const [query, setQuery] = useState('');
-  const [tab, setTab] = useState<Tab>('atracciones');
+  const tabParam = searchParams.get('tab') as Tab | null;
+  const tab: Tab = tabParam && ['atracciones', 'comidas', 'shows', 'personajes'].includes(tabParam) ? tabParam : 'atracciones';
+  const setTab = (t: Tab) => setSearchParams(prev => { const next = new URLSearchParams(prev); next.set('tab', t); return next; }, { replace: true });
 
   const attractions = useMemo(() => ATTRACTIONS.filter(a => a.day === date), [date]);
   const meals = useMemo(() => MEALS.filter(m => m.day === date), [date]);
