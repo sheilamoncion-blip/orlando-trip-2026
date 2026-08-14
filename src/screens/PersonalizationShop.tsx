@@ -4,6 +4,7 @@ import { Cake, Search, X } from 'lucide-react';
 import { PERSONALIZATION } from '../data/trip';
 import { PARK_LABELS } from '../types';
 import { db } from '../lib/db';
+import ItemPhotos from '../components/ItemPhotos';
 
 export default function PersonalizationShop() {
   const [, forceRerender] = useState(0);
@@ -60,6 +61,7 @@ export default function PersonalizationShop() {
                     {db.isOrdered(item.id) ? 'Ordenado ✓' : 'Marcar'}
                   </button>
                 </div>
+                <ItemPhotos itemId={item.id} />
               </div>
             ))}
           </div>

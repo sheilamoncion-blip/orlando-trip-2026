@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { MapPin, ChevronDown, Image as ImageIcon } from 'lucide-react';
+import { MapPin, ChevronDown, Image as ImageIcon, X, ZoomIn } from 'lucide-react';
 import { PARK_LABELS, PARK_COLORS, type ParkId } from '../types';
 import PhotoUploader from '../components/PhotoUploader';
 import { db } from '../lib/db';
@@ -101,10 +101,12 @@ export default function MapScreen() {
 function ParkMapCard({ parkId }: { parkId: ParkId }) {
   const staticSrc = `/maps/${parkId}.jpg`;
   const [open, setOpen] = useState(false);
+  const [zoomed, setZoomed] = useState(false);
   const [staticOk, setStaticOk] = useState(true);
   const [mapUrl, setMapUrl] = useState<string | null>(() => db.getParkMap(parkId));
 
   const hasMap = staticOk || !!mapUrl;
+  const activeSrc = staticOk ? staticSrc : mapUrl;
 
   const upload = (dataUrl: string) => {
     try {
@@ -129,12 +131,34 @@ function ParkMapCard({ parkId }: { parkId: ParkId }) {
       </button>
       {open && (
         <div className="px-3.5 pb-3.5">
-          {staticOk ? (
-            <img src={staticSrc} alt={`Mapa de ${PARK_LABELS[parkId]}`} className="w-full rounded-lg border border-slate-100 mb-2" onError={() => setStaticOk(false)} />
-          ) : mapUrl ? (
-            <img src={mapUrl} alt={`Mapa de ${PARK_LABELS[parkId]}`} className="w-full rounded-lg border border-slate-100 mb-2" />
-          ) : null}
+          {activeSrc && (
+            <button onClick={() => setZoomed(true)} className="relative block w-full group">
+              <img
+                src={activeSrc}
+                alt={`Mapa de ${PARK_LABELS[parkId]}`}
+                className="w-full rounded-lg border border-slate-100 mb-2"
+                onError={() => setStaticOk(false)}
+              />
+              <span className="absolute bottom-4 right-2 bg-black/60 text-white rounded-full p-1.5 flex items-center gap-1 text-[10px]">
+                <ZoomIn size={12} /> Toca para ampliar
+              </span>
+            </button>
+          )}
           <PhotoUploader onUpload={upload} label={hasMap ? 'Actualizar mapa' : 'Subir mapa'} />
+        </div>
+      )}
+
+      {zoomed && activeSrc && (
+        <div className="fixed inset-0 bg-black z-50 overflow-auto" onClick={() => setZoomed(false)}>
+          <button onClick={() => setZoomed(false)} className="fixed top-4 right-4 bg-white/90 rounded-full p-2 z-10">
+            <X size={20} />
+          </button>
+          <img
+            src={activeSrc}
+            alt={`Mapa de ${PARK_LABELS[parkId]} ampliado`}
+            className="min-w-full min-h-full w-auto h-auto"
+            style={{ touchAction: 'pinch-zoom' }}
+          />
         </div>
       )}
     </div>

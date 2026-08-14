@@ -31,6 +31,15 @@ function matchesQuery(query: string, ...fields: (string | undefined)[]): boolean
   return fields.some(f => f?.toLowerCase().includes(q));
 }
 
+function groupByVenue(meals: Meal[]): [string, Meal[]][] {
+  const map = new Map<string, Meal[]>();
+  meals.forEach(m => {
+    const key = m.venue || m.name;
+    (map.get(key) || map.set(key, []).get(key)!).push(m);
+  });
+  return Array.from(map.entries());
+}
+
 type Tab = 'atracciones' | 'comidas' | 'shows' | 'personajes';
 
 export default function DayDetail() {
@@ -72,7 +81,7 @@ export default function DayDetail() {
   }
 
   const filteredAttractions = attractions.filter(a => matchesQuery(query, a.name, a.area, a.photoTip));
-  const filteredMeals = meals.filter(m => matchesQuery(query, m.name, m.area, m.recommended.join(' ')));
+  const filteredMeals = meals.filter(m => matchesQuery(query, m.name, m.area, m.venue, m.recommended.join(' ')));
   const filteredShows = shows.filter(s => matchesQuery(query, s.name, s.location));
   const filteredCharacters = characters.filter(c => matchesQuery(query, c.name, c.area, c.freebies.join(' ')));
 
@@ -158,9 +167,9 @@ export default function DayDetail() {
         mealsByArea.map(([area, items]) => (
           <section key={`meals-${area}`}>
             <h2 className="text-sm font-bold text-slate-700 uppercase tracking-wide mb-2">{area}</h2>
-            <div className="space-y-3">
-              {items.map(m => (
-                <MealCard key={m.id} meal={m} done={db.isDone(m.id)} onToggle={() => toggleDone(m.id)} />
+            <div className="space-y-2.5">
+              {groupByVenue(items).map(([venue, venueItems]) => (
+                <VenueCard key={venue} venue={venue} items={venueItems} onToggle={toggleDone} />
               ))}
             </div>
           </section>
@@ -278,6 +287,36 @@ function AttractionCard({ attraction, live, done, onToggle }: { attraction: Attr
       />
       <ItemPhotos itemId={attraction.id} />
       <CommentThread threadId={attraction.id} />
+    </div>
+  );
+}
+
+function VenueCard({ venue, items, onToggle }: { venue: string; items: Meal[]; onToggle: (id: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const doneCount = items.filter(m => db.isDone(m.id)).length;
+  const avgTaste = items.reduce((s, m) => s + m.tasteRating, 0) / items.length;
+
+  return (
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center gap-3 p-3.5 text-left">
+        <div className="flex-1 min-w-0">
+          <h3 className="text-sm font-semibold text-slate-800 truncate">{venue}</h3>
+          <div className="flex items-center gap-2 mt-0.5">
+            <TasteStars value={Math.round(avgTaste)} />
+            <span className="text-xs text-slate-400">{items.length} {items.length === 1 ? 'ítem' : 'ítems'}{doneCount > 0 && ` · ${doneCount} probado${doneCount !== 1 ? 's' : ''}`}</span>
+          </div>
+        </div>
+        <span className="shrink-0 text-xs text-brand-600 font-medium flex items-center gap-0.5">
+          Ampliar menú <ChevronDown size={14} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
+        </span>
+      </button>
+      {open && (
+        <div className="px-3.5 pb-3.5 space-y-3 border-t border-slate-100 pt-3">
+          {items.map(m => (
+            <MealCard key={m.id} meal={m} done={db.isDone(m.id)} onToggle={() => onToggle(m.id)} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

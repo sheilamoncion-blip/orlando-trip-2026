@@ -36,6 +36,7 @@ export const MINION_MEALS: Meal[] = [
   // Illumination's Minion Café — menú real completo
   {
     id: 'us-minion-lucys-salmon', park: 'universal', area: 'Minion Land', day: DAY,
+    venue: "Illumination's Minion Café",
     name: "Lucy's Top Secret Salmon", priceRange: '$22.99', tasteRating: 5, photogenicRating: 4, typicalWaitMin: 15,
     recommended: ['Salmón atlántico a la parrilla', 'arroz azul de coco', 'pepinos thai', 'edamame', 'lipstick taser sauce'],
     addOns: [], photoTip: 'El arroz azul brillante contrasta con el salmón — foto desde arriba.',
@@ -43,6 +44,7 @@ export const MINION_MEALS: Meal[] = [
   },
   {
     id: 'us-minion-carls-cauliflower', park: 'universal', area: 'Minion Land', day: DAY,
+    venue: "Illumination's Minion Café",
     name: "Carl's Crispy Cauliflower", priceRange: '$18.99', tasteRating: 4, photogenicRating: 4, typicalWaitMin: 15,
     recommended: ['Coliflor crujiente con salsa agridulce picante', 'arroz azul de coco', 'pepinos thai', 'edamame'],
     addOns: [], photoTip: 'El arroz azul es la foto — opción vegana del menú.',
@@ -50,18 +52,21 @@ export const MINION_MEALS: Meal[] = [
   },
   {
     id: 'us-minion-ottos-carbonara', park: 'universal', area: 'Minion Land', day: DAY,
+    venue: "Illumination's Minion Café",
     name: "Otto's Carbonara", priceRange: '$20.99', tasteRating: 5, photogenicRating: 3, typicalWaitMin: 15,
     recommended: ['Cavatappi amarillo', 'salsa cremosa de ajo', 'pancetta', 'guisantes'],
     addOns: [], dietary: 'Sin pescado, gluten, cacahuate, mariscos, soya, nueces de árbol',
   },
   {
     id: 'us-minion-stuarts-szechuan', park: 'universal', area: 'Minion Land', day: DAY,
+    venue: "Illumination's Minion Café",
     name: "Chicken Stuart's Szechuan Surprise", priceRange: '$18.99', tasteRating: 4, photogenicRating: 3, typicalWaitMin: 15,
     recommended: ['Pollo rotisserie glaseado Szechuan', 'lo mein de vegetales salteado'],
     addOns: [], dietary: 'Sin lácteos, huevo, pescado, gluten, mariscos, nueces de árbol',
   },
   {
     id: 'us-minion-drus-pork-sandwich', park: 'universal', area: 'Minion Land', day: DAY,
+    venue: "Illumination's Minion Café",
     name: "Uncle Dru's Belly Fillin' Pork Sandwich", priceRange: '$17.99', tasteRating: 5, photogenicRating: 4, typicalWaitMin: 15,
     recommended: ['Cerdo desmenuzado lento', 'chimichurri', 'alioli de mostaza', 'mantequilla de manzana', 'bacon jam', 'arúgula', 'pan de pretzel', 'con Minion tots'],
     addOns: [], photoTip: 'Corte transversal para mostrar las capas — muy fotogénico.',
@@ -69,12 +74,14 @@ export const MINION_MEALS: Meal[] = [
   },
   {
     id: 'us-minion-cheese-ray-sandwich', park: 'universal', area: 'Minion Land', day: DAY,
+    venue: "Illumination's Minion Café",
     name: 'Steak & "Cheese Ray" Sandwich', priceRange: '$17.99', tasteRating: 5, photogenicRating: 4, typicalWaitMin: 15,
     recommended: ['Roast beef estilo French onion', 'cebollas caramelizadas', 'salsa secreta', 'queso cheddar "cheesy blast"', 'pan de cheddar y cebolla', 'con Minion tots'],
     addOns: [], dietary: 'Sin huevo, pescado, mariscos, nueces de árbol',
   },
   {
     id: 'us-minion-jerrys-burger', park: 'universal', area: 'Minion Land', day: DAY,
+    venue: "Illumination's Minion Café",
     name: "Jerry's Mega Cheesy Burger", priceRange: '$18.99', tasteRating: 5, photogenicRating: 5, typicalWaitMin: 15,
     recommended: ['Carne 7oz', 'queso americano', 'bacon crujiente', 'lechuga', 'tomate', 'salsa de queso', 'pan brioche casero', 'con Minion tots'],
     addOns: [], photoTip: 'La torre de ingredientes con el queso derretido escurriendo — foto clásica de burger.',
@@ -82,18 +89,21 @@ export const MINION_MEALS: Meal[] = [
   },
   {
     id: 'us-minion-kevins-salad', park: 'universal', area: 'Minion Land', day: DAY,
+    venue: "Illumination's Minion Café",
     name: "Kevin's Chopa Chopa Salad", priceRange: '$17.99', tasteRating: 4, photogenicRating: 4, typicalWaitMin: 10,
     recommended: ['Col morada y arúgula', 'tomate', 'pepino', 'edamame', 'pollo rotisserie desmenuzado', 'queso fresco', 'vinagreta cítrica'],
     addOns: [], dietary: 'Sin lácteos (opción), huevo, pescado, gluten, mariscos, soya, nueces de árbol',
   },
   {
     id: 'us-minion-freedonia-mac', park: 'universal', area: 'Minion Land', day: DAY,
+    venue: "Illumination's Minion Café",
     name: 'Freedonia Festival of Mac & Cheese', priceRange: '$16.99', tasteRating: 5, photogenicRating: 4, typicalWaitMin: 10,
     recommended: ['Pasta con salsa de queso cheddar blanco', 'cerdo desmenuzado', 'perejil', 'parmesano', 'con Minion tots'],
     addOns: [], dietary: 'Sin huevo, pescado, mariscos, soya, nueces de árbol',
   },
   {
     id: 'us-minion-el-macho-nachos', park: 'universal', area: 'Minion Land', day: DAY,
+    venue: "Illumination's Minion Café",
     name: "El Macho's Supreme Nachos", priceRange: '$18.99', tasteRating: 4, photogenicRating: 4, typicalWaitMin: 10,
     recommended: ['Totopos crujientes', 'ropa vieja', 'jalapeños', 'crema de cilantro y lima', 'tomate', 'cebolla', 'salsa de queso'],
     addOns: [], photoTip: 'Buena opción para compartir en grupo grande.',
@@ -101,12 +111,14 @@ export const MINION_MEALS: Meal[] = [
   },
   {
     id: 'us-minion-mels-pizza', park: 'universal', area: 'Minion Land', day: DAY,
+    venue: "Illumination's Minion Café",
     name: "Mel's Meatball Mountain", priceRange: '$17.99', tasteRating: 4, photogenicRating: 4, typicalWaitMin: 15,
     recommended: ['Pizza rellena horneada', 'albóndigas', 'albahaca', 'mozzarella fresca', 'marinara'],
     addOns: [], dietary: 'Sin pescado, mariscos, nueces de árbol',
   },
   {
     id: 'us-minion-unicorn-cupcake', park: 'universal', area: 'Minion Land', day: DAY,
+    venue: "Illumination's Minion Café",
     name: 'Fluffy Unicorn Cupcake', priceRange: '$6.79', tasteRating: 5, photogenicRating: 5, typicalWaitMin: 5,
     recommended: ['Cupcake de confeti', 'glaseado vainilla y chicle', 'cuerno de unicornio de chocolate blanco'],
     addOns: [], photoTip: 'El cuerno de unicornio es la foto — muy colorido y tierno.',
@@ -114,6 +126,7 @@ export const MINION_MEALS: Meal[] = [
   },
   {
     id: 'us-minion-swiss-roll', park: 'universal', area: 'Minion Land', day: DAY,
+    venue: "Illumination's Minion Café",
     name: 'Minion Swiss Roll', priceRange: '$7.99', tasteRating: 5, photogenicRating: 5, typicalWaitMin: 5,
     recommended: ['Bizcocho de vainilla', 'ganache batida de piña y cardamomo', '"banana" de fruta de la pasión con cubierta de chocolate'],
     addOns: [], photoTip: 'El corte transversal muestra el relleno de colores — muy fotogénico.',
@@ -121,17 +134,20 @@ export const MINION_MEALS: Meal[] = [
   },
   {
     id: 'us-minion-pet-rock', park: 'universal', area: 'Minion Land', day: DAY,
+    venue: "Illumination's Minion Café",
     name: "Otto's Pet Rock", priceRange: '$8.99', tasteRating: 4, photogenicRating: 4, typicalWaitMin: 5,
     recommended: ['Mousse de mantequilla de maní', 'jalea de fresa', 'maní triturado', 'bizcocho de banana bañado en chocolate'],
     addOns: [], dietary: 'Sin pescado, mariscos, soya',
   },
   {
     id: 'us-minion-tots', park: 'universal', area: 'Minion Land', day: DAY,
+    venue: "Illumination's Minion Café",
     name: 'Minion Tots', priceRange: '$5.99', tasteRating: 4, photogenicRating: 3, typicalWaitMin: 5,
     recommended: ['Tots de papa estilo minion — buen acompañante'], addOns: [], dietary: 'Vegetariano',
   },
   {
     id: 'us-minion-px41-punch', park: 'universal', area: 'Minion Land', day: DAY,
+    venue: "Illumination's Minion Café",
     name: 'PX-41 Punch (bebida especial)', priceRange: '$8.49', tasteRating: 4, photogenicRating: 5, typicalWaitMin: 5,
     recommended: ['Limonada con fresa y kiwi', 'topping color "Evil Minion"', 'Pop Rocks de blue raspberry'],
     addOns: [], photoTip: 'El color llamativo y las Pop Rocks la hacen la bebida más fotogénica del café.',
@@ -139,12 +155,14 @@ export const MINION_MEALS: Meal[] = [
   },
   {
     id: 'us-minion-antidote', park: 'universal', area: 'Minion Land', day: DAY,
+    venue: "Illumination's Minion Café",
     name: 'The Antidote (bebida especial)', priceRange: '$8.49', tasteRating: 5, photogenicRating: 5, typicalWaitMin: 5,
     recommended: ['Sabor a banana', 'topping color Minion', 'migas de galleta graham — sabe a pay de banana'],
     addOns: [], dietary: 'Vegetariano',
   },
   {
     id: 'us-minion-freestyle-cup', park: 'universal', area: 'Minion Land', day: DAY,
+    venue: "Illumination's Minion Café",
     name: 'Vaso souvenir Coca-Cola Freestyle®', priceRange: '$19.99 (día) + $12.99 día extra', tasteRating: 4, photogenicRating: 5, typicalWaitMin: 5,
     recommended: ['Más de 100 combinaciones de refrescos', 'refills todo el día de compra', 'descuento por comprar 2+ vasos'],
     addOns: [{ label: 'Día extra de refills', price: 12.99 }],
@@ -153,6 +171,7 @@ export const MINION_MEALS: Meal[] = [
   },
   {
     id: 'us-minion-mini-cheesy-mashup', park: 'universal', area: 'Minion Land', day: DAY,
+    venue: "Illumination's Minion Café",
     name: "Bob's Cheesy Mashup (menú niños)", priceRange: '$9.99', tasteRating: 4, photogenicRating: 3, typicalWaitMin: 10,
     recommended: ['Waffle de papa con cheddar', 'mac and cheese', 'salsa de queso', 'mini banana', 'uvas'],
     addOns: [], dietary: 'Vegetariano — para niños 9 años o menos',

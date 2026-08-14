@@ -3,6 +3,7 @@ import BackButton from '../components/BackButton';
 import PhotoUploader from '../components/PhotoUploader';
 import { Plus, X, MapPinned, Phone, Cake as CakeIcon, Users, Pencil } from 'lucide-react';
 import { db } from '../lib/db';
+import { removeBackground } from '../lib/imageUtils';
 import type { FamilyMember } from '../types';
 
 function groupByLabel(members: FamilyMember[]): [string, FamilyMember[]][] {
@@ -18,9 +19,9 @@ function initials(name: string): string {
 }
 
 function Avatar({ member, size = 'md' }: { member: FamilyMember; size?: 'md' | 'lg' }) {
-  const dims = size === 'lg' ? 'w-20 h-28' : 'w-16 h-20';
+  const dims = size === 'lg' ? 'w-24 h-32' : 'w-20 h-24';
   if (member.avatar) {
-    return <img src={member.avatar} className={`${dims} object-contain rounded-xl bg-slate-50 border border-slate-100`} />;
+    return <img src={member.avatar} className={`${dims} object-contain`} style={{ filter: 'drop-shadow(0 3px 5px rgba(0,0,0,0.25))' }} />;
   }
   return (
     <div className={`${dims} rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center font-bold border border-slate-100 ${size === 'lg' ? 'text-2xl' : 'text-base'}`}>
@@ -111,10 +112,12 @@ export default function Family() {
       {showForm && (
         <div className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-sm space-y-2">
           <div className="flex items-center gap-3">
-            {form.avatar ? <img src={form.avatar} className="w-16 h-20 object-contain rounded-xl bg-slate-50 border border-slate-100" /> : (
+            {form.avatar ? (
+              <img src={form.avatar} className="w-16 h-20 object-contain" style={{ filter: 'drop-shadow(0 3px 5px rgba(0,0,0,0.25))' }} />
+            ) : (
               <div className="w-16 h-20 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg font-bold shrink-0">{form.name ? initials(form.name) : '?'}</div>
             )}
-            <PhotoUploader onUpload={a => setForm(f => ({ ...f, avatar: a }))} label="Subir avatar" />
+            <PhotoUploader onUpload={async a => { const bg = await removeBackground(a); setForm(f => ({ ...f, avatar: bg })); }} label="Subir avatar" />
           </div>
           <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Nombre y apellido" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300" />
           <div className="grid grid-cols-2 gap-2">
@@ -225,10 +228,12 @@ export default function Family() {
               <button onClick={() => setEditing(false)} className="text-slate-400"><X size={18} /></button>
             </div>
             <div className="flex items-center gap-3">
-              {form.avatar ? <img src={form.avatar} className="w-16 h-20 object-contain rounded-xl bg-slate-50 border border-slate-100" /> : (
+              {form.avatar ? (
+                <img src={form.avatar} className="w-16 h-20 object-contain" style={{ filter: 'drop-shadow(0 3px 5px rgba(0,0,0,0.25))' }} />
+              ) : (
                 <div className="w-16 h-20 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg font-bold shrink-0">{form.name ? initials(form.name) : '?'}</div>
               )}
-              <PhotoUploader onUpload={a => setForm(f => ({ ...f, avatar: a }))} label="Cambiar avatar" />
+              <PhotoUploader onUpload={async a => { const bg = await removeBackground(a); setForm(f => ({ ...f, avatar: bg })); }} label="Cambiar avatar" />
             </div>
             <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Nombre y apellido" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand-300" />
             <div className="grid grid-cols-2 gap-2">

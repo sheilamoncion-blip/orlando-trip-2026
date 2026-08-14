@@ -52,6 +52,7 @@ export interface Meal {
   park: ParkId;
   area?: string;
   day: string;
+  venue?: string; // restaurante/QSR/booth/carrito — si falta, se usa `name` como venue (item = venue)
   name: string;
   priceRange: string;
   tasteRating: number;
