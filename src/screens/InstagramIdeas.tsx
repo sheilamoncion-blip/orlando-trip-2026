@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import BackButton from '../components/BackButton';
 import PhotoUploader from '../components/PhotoUploader';
+import ContentIdeaBoard from '../components/ContentIdeaBoard';
 import { Camera, Search, X, ExternalLink, Trash2, Plus } from 'lucide-react';
 import { PARK_LABELS, type ParkId } from '../types';
 import type { InstagramPost } from '../types';
@@ -13,7 +14,10 @@ const PARK_OPTIONS: (ParkId | 'any')[] = ['any', 'universal', 'islands', 'epic',
 interface FormState { link: string; photo: string; who: string[]; location: string; park: ParkId | 'any' }
 const emptyForm: FormState = { link: '', photo: '', who: [], location: '', park: 'any' };
 
+type Tab = 'ideas' | 'publicado';
+
 export default function InstagramIdeas() {
+  const [tab, setTab] = useState<Tab>('ideas');
   const [posts, setPosts] = useState<InstagramPost[]>([]);
   useEffect(() => { db.getInstagramPosts().then(setPosts); }, []);
   const [query, setQuery] = useState('');
@@ -63,15 +67,25 @@ export default function InstagramIdeas() {
   return (
     <div className="p-4 pb-24 max-w-lg mx-auto space-y-3">
       <BackButton fallback="/mas" label="Más" />
-      <header className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-extrabold text-slate-800 flex items-center gap-2"><Camera size={20} /> Instagram</h1>
-          <p className="text-sm text-slate-500">Fichas con los posts que subimos</p>
-        </div>
-        <button onClick={() => { setForm(emptyForm); setShowForm(!showForm); }} className="flex items-center gap-1 bg-brand-600 text-white text-xs font-medium px-3 py-2 rounded-lg shrink-0">
-          <Plus size={14} /> Agregar
-        </button>
+      <header>
+        <h1 className="text-xl font-extrabold text-slate-800 flex items-center gap-2"><Camera size={20} /> Instagram</h1>
+        <p className="text-sm text-slate-500">Ideas para grabar y fichas de lo ya publicado</p>
       </header>
+
+      <div className="flex gap-1 bg-slate-100 rounded-xl p-1">
+        <button onClick={() => setTab('ideas')} className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${tab === 'ideas' ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500'}`}>Ideas</button>
+        <button onClick={() => setTab('publicado')} className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${tab === 'publicado' ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500'}`}>Publicado</button>
+      </div>
+
+      {tab === 'ideas' && <ContentIdeaBoard platform="reel" />}
+
+      {tab === 'publicado' && (
+        <div className="space-y-3">
+      <div className="flex justify-end">
+        <button onClick={() => { setForm(emptyForm); setShowForm(!showForm); }} className="flex items-center gap-1 bg-brand-600 text-white text-xs font-medium px-3 py-2 rounded-lg shrink-0">
+          <Plus size={14} /> Agregar publicado
+        </button>
+      </div>
 
       {showForm && (
         <div className="bg-white rounded-xl border border-slate-200 p-3.5 shadow-sm space-y-2">
@@ -163,6 +177,8 @@ export default function InstagramIdeas() {
           <button onClick={() => remove(post.id)} className="text-slate-300 hover:text-rose-500 transition shrink-0"><Trash2 size={14} /></button>
         </div>
       ))}
+        </div>
+      )}
     </div>
   );
 }

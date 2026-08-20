@@ -1,4 +1,4 @@
-import type { Comment, PhotoBoardItem, FamilyMember, FamilyGroup, ActivityUpdate, InstagramPost } from '../types';
+import type { Comment, PhotoBoardItem, FamilyMember, FamilyGroup, ActivityUpdate, InstagramPost, ContentIdea } from '../types';
 import { idbGet, idbSet, idbGetAllEntries, idbClearAll } from './idb';
 import { DEFAULT_FAMILY_GROUPS, DEFAULT_FAMILY_MEMBERS } from '../data/family';
 
@@ -15,12 +15,6 @@ function load<T>(key: string, fallback: T): T {
 
 function save(key: string, data: unknown) {
   localStorage.setItem(key, JSON.stringify(data));
-}
-
-export interface TikTokStatus {
-  filmed: boolean;
-  edited: boolean;
-  posted: boolean;
 }
 
 export interface MyMealStatus {
@@ -76,12 +70,22 @@ export const db = {
     save('otp_comments', all);
   },
 
-  // TikTok production status
-  getTikTokStatus: (id: string): TikTokStatus => load<Record<string, TikTokStatus>>('otp_tiktok', {})[id] || { filmed: false, edited: false, posted: false },
-  setTikTokStatus: (id: string, status: TikTokStatus) => {
-    const all = load<Record<string, TikTokStatus>>('otp_tiktok', {});
-    all[id] = status;
-    save('otp_tiktok', all);
+  // Ideas de contenido (TikTok/Reels) — cualquiera puede agregar una, sin dueño fijo
+  getContentIdeas: (platform?: ContentIdea['platform']): ContentIdea[] => {
+    const all = load<ContentIdea[]>('otp_content_ideas', []);
+    return platform ? all.filter(i => i.platform === platform) : all;
+  },
+  saveContentIdeas: (ideas: ContentIdea[]) => save('otp_content_ideas', ideas),
+
+  // Lista de tags disponibles para las ideas de contenido — crece según lo que la familia agregue
+  getIdeaTags: (): string[] => {
+    const custom = load<string[]>('otp_idea_tags', []);
+    const defaults = ['Comida', 'Vestuario', 'Personajes', 'Atracciones', 'Transición', 'Baile'];
+    return Array.from(new Set([...defaults, ...custom]));
+  },
+  addIdeaTag: (tag: string) => {
+    const all = load<string[]>('otp_idea_tags', []);
+    if (!all.includes(tag)) { all.push(tag); save('otp_idea_tags', all); }
   },
 
   // Family members — grouped by family unit, con avatar/edad/teléfono. Viven en IndexedDB

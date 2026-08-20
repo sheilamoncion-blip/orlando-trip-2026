@@ -123,15 +123,18 @@ export interface Country {
   guide?: string;
 }
 
-export interface TikTokIdea {
+export interface ContentIdea {
   id: string;
+  platform: 'tiktok' | 'reel';
   title: string;
-  audio: string;
+  song: string; // canción/audio
   description: string;
-  durationSec: number;
-  bestTime: string;
-  viralPotential: 1 | 2 | 3 | 4 | 5;
-  park: ParkId | 'any';
+  referenceUrl?: string; // link a un video de referencia (de otra cuenta, para inspirarse)
+  tips?: string;
+  bestTime: string; // mejor momento del día/parque para grabarlo
+  tags: string[]; // ej: Comida, Vestuario, Personajes — libres, se pueden agregar más
+  status: { filmed: boolean; edited: boolean; posted: boolean };
+  createdAt: string;
 }
 
 export interface InstagramPost {

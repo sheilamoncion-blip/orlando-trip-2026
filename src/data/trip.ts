@@ -1,4 +1,4 @@
-import type { TripDay, Attraction, Meal, ShowItem, CharacterMeet, Country, TikTokIdea, PersonalizationItem, BirthdayPerson, AreaGuide, VisitedPark } from '../types';
+import type { TripDay, Attraction, Meal, ShowItem, CharacterMeet, Country, PersonalizationItem, BirthdayPerson, AreaGuide, VisitedPark } from '../types';
 import { UNIVERSAL_STUDIOS_ATTRACTIONS, UNIVERSAL_STUDIOS_MEALS, UNIVERSAL_STUDIOS_CHARACTERS, UNIVERSAL_STUDIOS_AREA_GUIDES } from './universalStudiosAreas';
 import { EPIC_UNIVERSE_ATTRACTIONS, EPIC_UNIVERSE_MEALS, EPIC_UNIVERSE_CHARACTERS, EPIC_UNIVERSE_AREA_GUIDES } from './epicUniverseAreas';
 import { MAGIC_KINGDOM_ATTRACTIONS, MAGIC_KINGDOM_MEALS, MAGIC_KINGDOM_CHARACTERS, MAGIC_KINGDOM_AREA_GUIDES } from './magicKingdomAreas';
@@ -315,19 +315,6 @@ export const COUNTRIES: Country[] = [
   }),
 ];
 
-export const TIKTOK_IDEAS: TikTokIdea[] = [
-  tk('Entrada Harry Potter', 'Hedwig\'s Theme', 'Filma la primera vista del castillo — caminando hacia adelante, cámara baja subiendo.', 15, 'Llegada, mañana con buena luz', 5, 'universal'),
-  tk('Gritos en la Montaña Rusa', 'Audio "Rollercoaster"', 'Cámara en mano en la fila, luego reacción de la cámara de la atracción.', 10, 'En la fila o al bajar', 4, 'any'),
-  tk('Sorbo de Butterbeer', 'ASMR + "Life is sweet"', 'Close-up del sorbo con espuma, sonido ASMR.', 8, 'Al recibir la bebida', 4, 'universal'),
-  tk('Alrededor del Mundo', '"Around the World" (Daft Punk)', 'Transición rápida entre los 11 países del World Showcase.', 60, 'Durante el reto de Epcot', 5, 'epcot'),
-  tk('Food Haul', 'ASMR comiendo', 'Mostrar toda la comida probada en el día, estilo mukbang corto.', 60, 'Después de comer', 4, 'any'),
-  tk('Reacción a los Fuegos', 'Audio oficial "Happily Ever After"', 'Cámara en las caras de la familia mirando el show.', 60, 'Durante el show nocturno', 5, 'magic-kingdom'),
-  tk('Magia del Castillo', '"Magical moment" (trending)', 'Toma cinemática del castillo con la familia caminando.', 30, 'Atardecer', 4, 'magic-kingdom'),
-  tk('Momentos en Familia', 'Música emotiva', 'Recopilación de risas y abrazos del día.', 60, 'Cualquier momento', 3, 'any'),
-  tk('Bloopers y Fails', 'Sonido de comedia', 'Los momentos chistosos/torpes del día.', 45, 'Cualquier momento', 4, 'any'),
-  tk('Vlog Disney', 'Canción trending', 'Vlog completo del día, en 4-5 partes.', 180, 'Todo el día', 5, 'any'),
-];
-
 export const PERSONALIZATION: PersonalizationItem[] = [
   p('magic-kingdom', 'Perfume Dior grabado', '$150-200', 'Grabado personalizado gratis', '2-3 horas de proceso', 'Guerlain Boutique / Perfumería en Main Street', 'sheila'),
   p('magic-kingdom', 'Orejas personalizadas', '$35-80', 'Bordado con nombre gratis', '30-45 min', 'Bibbidi Bobbidi Boutique / tiendas de Main Street', 'sheila'),
@@ -354,9 +341,6 @@ function ci(name: string, price: number, taste: number, photogenic: number, desc
 }
 function country(id: string, name: string, flag: string, foods: ReturnType<typeof ci>[], drinks: ReturnType<typeof ci>[], details?: { bestTime?: string; crowdLevel?: string; photoTip?: string; entertainment?: string; guide?: string }): Country {
   return { id, name, flag, foods, drinks, ...details };
-}
-function tk(title: string, audio: string, description: string, durationSec: number, bestTime: string, viralPotential: 1|2|3|4|5, park: TikTokIdea['park']): TikTokIdea {
-  return { id: slug(title), title, audio, description, durationSec, bestTime, viralPotential, park };
 }
 function p(park: PersonalizationItem['park'], name: string, priceRange: string, customizable: string, orderTime: string, location: string, birthdayPick?: 'carlos' | 'sheila'): PersonalizationItem {
   return { id: slug(park + '-' + name), park, name, priceRange, customizable, orderTime, location, birthdayPick };
