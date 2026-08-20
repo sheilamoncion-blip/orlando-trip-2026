@@ -130,8 +130,11 @@ export interface ContentIdea {
   song: string; // canción/audio
   description: string;
   referenceUrl?: string; // link a un video de referencia (de otra cuenta, para inspirarse)
+  referenceImage?: string; // foto de referencia (dataUrl)
   tips?: string;
   bestTime: string; // mejor momento del día/parque para grabarlo
+  park?: ParkId | 'any';
+  location?: string; // lugar específico dentro del parque, ej: "Frente al castillo"
   tags: string[]; // ej: Comida, Vestuario, Personajes — libres, se pueden agregar más
   status: { filmed: boolean; edited: boolean; posted: boolean };
   createdAt: string;

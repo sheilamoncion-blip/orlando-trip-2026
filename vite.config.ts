@@ -10,7 +10,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['icon.svg'],
+      includeAssets: ['stickers/home.png'],
       manifest: {
         name: 'Orlando Trip 2026 — Familia',
         short_name: 'Orlando 2026',
@@ -20,8 +20,9 @@ export default defineConfig({
         display: 'standalone',
         start_url: '/',
         icons: [
-          { src: '/icon.svg', sizes: '512x512', type: 'image/svg+xml', purpose: 'any' },
-          { src: '/icon.svg', sizes: '512x512', type: 'image/svg+xml', purpose: 'maskable' },
+          { src: '/stickers/home.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: '/stickers/home.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: '/stickers/home.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
       workbox: {

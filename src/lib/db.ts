@@ -4,7 +4,7 @@ import { DEFAULT_FAMILY_GROUPS, DEFAULT_FAMILY_MEMBERS } from '../data/family';
 
 // Claves cuyo contenido (fotos/avatares en base64) es demasiado pesado para localStorage
 // (~5-10MB de cuota) — se guardan en IndexedDB en su lugar, que soporta cientos de MB.
-const MEDIA_KEYS = ['otp_family_members', 'otp_photoboard', 'otp_item_photos', 'otp_park_maps', 'otp_instagram_posts'] as const;
+const MEDIA_KEYS = ['otp_family_members', 'otp_photoboard', 'otp_item_photos', 'otp_park_maps', 'otp_instagram_posts', 'otp_content_ideas'] as const;
 
 function load<T>(key: string, fallback: T): T {
   try {
@@ -70,12 +70,13 @@ export const db = {
     save('otp_comments', all);
   },
 
-  // Ideas de contenido (TikTok/Reels) — cualquiera puede agregar una, sin dueño fijo
-  getContentIdeas: (platform?: ContentIdea['platform']): ContentIdea[] => {
-    const all = load<ContentIdea[]>('otp_content_ideas', []);
+  // Ideas de contenido (TikTok/Reels) — cualquiera puede agregar una, sin dueño fijo.
+  // En IndexedDB porque pueden incluir foto de referencia.
+  getContentIdeas: async (platform?: ContentIdea['platform']): Promise<ContentIdea[]> => {
+    const all = await idbGet<ContentIdea[]>('otp_content_ideas', []);
     return platform ? all.filter(i => i.platform === platform) : all;
   },
-  saveContentIdeas: (ideas: ContentIdea[]) => save('otp_content_ideas', ideas),
+  saveContentIdeas: (ideas: ContentIdea[]) => idbSet('otp_content_ideas', ideas),
 
   // Lista de tags disponibles para las ideas de contenido — crece según lo que la familia agregue
   getIdeaTags: (): string[] => {

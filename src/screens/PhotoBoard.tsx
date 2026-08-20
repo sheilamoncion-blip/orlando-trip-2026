@@ -16,8 +16,10 @@ export default function PhotoBoard() {
   const [typeFilter, setTypeFilter] = useState<'all' | 'reference' | 'ours'>('all');
   const [parkFilter, setParkFilter] = useState<ParkId | 'any' | 'all'>('all');
   const [uploaderFilter, setUploaderFilter] = useState('all');
+  const [locationFilter, setLocationFilter] = useState('all');
 
   const uploaders = useMemo(() => Array.from(new Set(items.map(i => i.uploadedBy).filter(Boolean))) as string[], [items]);
+  const locations = useMemo(() => Array.from(new Set(items.map(i => i.whereToStand).filter(Boolean))) as string[], [items]);
 
   const currentUploader = () => {
     const saved = localStorage.getItem('otp_me');
@@ -55,6 +57,7 @@ export default function PhotoBoard() {
     if (typeFilter !== 'all' && i.type !== typeFilter) return false;
     if (parkFilter !== 'all' && i.park !== parkFilter) return false;
     if (uploaderFilter !== 'all' && i.uploadedBy !== uploaderFilter) return false;
+    if (locationFilter !== 'all' && i.whereToStand !== locationFilter) return false;
     if (!query.trim()) return true;
     const q = query.toLowerCase();
     return [i.note, i.whereToStand, i.bestTime, i.filename, i.uploadedBy].some(f => f?.toLowerCase().includes(q));
@@ -100,6 +103,12 @@ export default function PhotoBoard() {
           <select value={uploaderFilter} onChange={e => setUploaderFilter(e.target.value)} className="shrink-0 border border-slate-200 rounded-full px-3 py-1.5 text-xs bg-white">
             <option value="all">Quien sea</option>
             {uploaders.map(u => <option key={u} value={u}>{u}</option>)}
+          </select>
+        )}
+        {locations.length > 0 && (
+          <select value={locationFilter} onChange={e => setLocationFilter(e.target.value)} className="shrink-0 border border-slate-200 rounded-full px-3 py-1.5 text-xs bg-white">
+            <option value="all">Todos los lugares</option>
+            {locations.map(loc => <option key={loc} value={loc}>{loc}</option>)}
           </select>
         )}
       </div>
