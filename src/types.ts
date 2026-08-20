@@ -136,6 +136,7 @@ export interface ContentIdea {
   park?: ParkId | 'any';
   location?: string; // lugar específico dentro del parque, ej: "Frente al castillo"
   tags: string[]; // ej: Comida, Vestuario, Personajes — libres, se pueden agregar más
+  uploadedBy?: string;
   status: { filmed: boolean; edited: boolean; posted: boolean };
   createdAt: string;
 }

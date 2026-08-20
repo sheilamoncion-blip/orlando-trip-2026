@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Search, X, Plus, ExternalLink, Music2, Trash2, ChevronDown, Camera, MapPin } from 'lucide-react';
 import { db } from '../lib/db';
 import { resizeImage } from '../lib/imageUtils';
+import { ensureMe } from '../lib/useMe';
 import PhotoUploader from './PhotoUploader';
 import { PARK_LABELS, type ParkId } from '../types';
 import type { ContentIdea } from '../types';
@@ -45,12 +46,14 @@ export default function ContentIdeaBoard({ platform }: { platform: ContentIdea['
 
   const addIdea = async () => {
     if (!form.title.trim()) return;
+    const me = await ensureMe();
     const idea: ContentIdea = {
       id: crypto.randomUUID(), platform, title: form.title.trim(), song: form.song.trim(),
       description: form.description.trim(), referenceUrl: form.referenceUrl.trim() || undefined,
       referenceImage: form.referenceImage || undefined,
       tips: form.tips.trim() || undefined, bestTime: form.bestTime.trim(),
       park: form.park, location: form.location.trim() || undefined, tags: form.tags,
+      uploadedBy: me || undefined,
       status: { filmed: false, edited: false, posted: false }, createdAt: new Date().toISOString(),
     };
     try {
@@ -217,6 +220,7 @@ function IdeaCard({ idea, onStep, onRemove }: { idea: ContentIdea; onStep: (step
             {showTips && <p className="text-xs text-slate-500 mt-1 bg-slate-50 rounded-lg p-2">{idea.tips}</p>}
           </>
         )}
+        {idea.uploadedBy && <p className="text-[10px] text-slate-400 mt-1.5">Subido por {idea.uploadedBy}</p>}
         <div className="flex gap-1.5 mt-2.5">
           {(['filmed', 'edited', 'posted'] as const).map(step => (
             <button
